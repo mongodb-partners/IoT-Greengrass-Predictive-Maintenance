@@ -22,7 +22,7 @@
 
 [Set up AWS Backend for Predictive Maintenance](./4.%20aws-sagemaker/predictive-maintenance/README.md)
 
-### 5. Set up the Backend for the Chat Assistant
+### 5. Set up AWS Backend for the Chat Assistant
 
 [Set up the Backend for the Chat Assistant](./5.%20aws-bedrock/README.md)
 
