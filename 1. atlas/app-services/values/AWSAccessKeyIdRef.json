@@ -1,5 +1,0 @@
-{
-    "name": "AWSAccessKeyIdRef",
-    "value": "AWSAccessKeyId",
-    "from_secret": true
-}

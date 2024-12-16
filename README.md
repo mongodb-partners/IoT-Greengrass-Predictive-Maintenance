@@ -8,32 +8,32 @@
 
 ### Part 1. Set up Atlas Predictive Maintenance Backend
 
-[Set up Atlas Predictive Maintenance Backend](./1.%20atlas/)
+[Set up Atlas Predictive Maintenance Backend](./1-atlas/)
 
 ### Part 2. Set up Edge Gateway and Vehicle Simulator
 
-[Set up Edge Gateway and Vehicle Simulator](./2.%20edge/)
+[Set up Edge Gateway and Vehicle Simulator](./2-edge/)
 
-### 3. Set up AWS Backend for Edge Gateway Greengrass Runtime Telemetry
+### Part 3. Set up AWS Backend for Edge Gateway Greengrass Runtime Telemetry
 
-[Set up AWS Backend for Edge Gateway Greengrass Runtime Telemetry](./3.%20aws-greengrass-telemetry/README.md)
+[Set up AWS Backend for Edge Gateway Greengrass Runtime Telemetry](./3-aws-greengrass-telemetry/README.md)
 
-### 4. Set up AWS Backend for Predictive Maintenance
+### Part 4. Set up AWS Backend for Predictive Maintenance
 
-[Set up AWS Backend for Predictive Maintenance](./4.%20aws-sagemaker/predictive-maintenance/README.md)
+[Set up AWS Backend for Predictive Maintenance](./4-aws-sagemaker/predictive-maintenance/README.md)
 
-### 5. Set up AWS Backend for the Chat Assistant
+### Part 5. Set up the Backend for the Chat Assistant
 
-[Set up the Backend for the Chat Assistant](./5.%20aws-bedrock/README.md)
+[Set up AWS Backend for the Chat Assistant](./5-aws-bedrock/README.md)
 
-### 6. Set up Field Technician's Mobile Application
+### Part 6. Set up Field Technician's Mobile Application
 
-With the previous steps done, vehicle telemetry would flow to MongoDB, then to AWS and finally be used to do predictive maintenance. If we determine a vechicle needs service, a vehicle maintenance job is created in MongoDB. These are shown in this mobile application.
+With the previous steps done, vehicle telemetry would flow to MongoDB, then to AWS and finally be used to do predictive maintenance. If we determine a vehicle needs service, a vehicle maintenance job is created in MongoDB. These are shown in this mobile application.
 
-[Set up Field Technician's Mobile Application](./6.%20mobile/)
+[Set up Field Technician's Mobile Application](./6-mobile/)
 
-### 7. Set up Fleet Dashboard
+### Part 7. Set up Fleet Dashboard
 
 The Fleet dashboard shows all vehicle maintenance jobs, vehicle information, and parts inventory.
 
-[Set up Fleet Dashboard](./7.%20web/) holds the code for the web dashboard. This shows information about the fleet.
+[Set up Fleet Dashboard](./7-web/README.md) holds the code for the web dashboard. This shows information about the fleet.
