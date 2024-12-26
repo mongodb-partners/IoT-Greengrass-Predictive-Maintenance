@@ -1,4 +1,4 @@
-# Fleet UI
+# Fleet Web
 
 This React.js application allows users to view vehicles, parts, and jobs. This uses Realm [Device sync for Web](https://www.mongodb.com/docs/realm/web/install/) to sync jobs in real-time whenever the jobs gets updated in the Atlas. 
 
@@ -9,7 +9,7 @@ To get started with the application, follow these steps:
 1. **Navigate to the project directory:**
 
     ```bash
-    cd frontend/fleet-ui
+    cd frontend/iot-fleet-web
     ```
 
 2. **Install dependencies:**
