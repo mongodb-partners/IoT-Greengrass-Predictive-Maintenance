@@ -9,8 +9,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt install git build-essential libssl-dev doxygen graphviz cmake -y
 
 WORKDIR /pahocpp
-RUN git clone https://github.com/eclipse/paho.mqtt.cpp
+RUN git clone https://github.com/eclipse/paho.mqtt.cpp.git
 WORKDIR /pahocpp/paho.mqtt.cpp
+RUN git checkout v1.3.2
+
 RUN git clone https://github.com/eclipse/paho.mqtt.c.git
 WORKDIR /pahocpp/paho.mqtt.cpp/paho.mqtt.c
 RUN git checkout v1.3.8

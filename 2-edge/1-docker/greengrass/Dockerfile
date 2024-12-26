@@ -56,11 +56,11 @@ COPY "modify-sudoers.sh" /
 RUN chmod +x /modify-sudoers.sh
 RUN ./modify-sudoers.sh
 
-
-
 WORKDIR /pahocpp
-RUN git clone https://github.com/eclipse/paho.mqtt.cpp
+RUN git clone https://github.com/eclipse/paho.mqtt.cpp.git
 WORKDIR /pahocpp/paho.mqtt.cpp
+RUN git checkout v1.3.2
+
 RUN git clone https://github.com/eclipse/paho.mqtt.c.git
 WORKDIR /pahocpp/paho.mqtt.cpp/paho.mqtt.c
 RUN git checkout v1.3.8
@@ -71,6 +71,5 @@ WORKDIR /pahocpp/paho.mqtt.cpp
 RUN cmake -Bbuild -H. -DPAHO_BUILD_STATIC=ON
 RUN cmake --build build/ --target install
 RUN ldconfig
-
 
 ENTRYPOINT ["/greengrass-entrypoint.sh"]

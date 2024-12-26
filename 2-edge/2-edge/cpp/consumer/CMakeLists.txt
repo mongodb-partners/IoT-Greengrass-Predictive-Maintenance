@@ -1,28 +1,35 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.9)
+# note: cxx-17 requires cmake 3.8, cxx-20 requires cmake 3.12
+project(consumer CXX)
 
-project(CppConsumer)
-
-# Minimum C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(PAHO_ENABLE_TESTING false CACHE BOOL "ignore")
-set(PAHO_BUILD_STATIC true CACHE BOOL "ignore")
-set(PAHO_BUILD_SHARED false CACHE BOOL "ignore")
+file(GLOB SRC_FILES
+       "*.cpp"
+       "./utils/CommandLineUtils.cpp"
+       "./utils/CommandLineUtils.h"
+)
 
 Include(FetchContent)
 
-find_package(PahoMqttCpp REQUIRED)
 find_package(SQLite3 REQUIRED)
-find_package(eclipse-paho-mqtt-c REQUIRED)
-find_package(OpenSSL REQUIRED)
 
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
 FetchContent_MakeAvailable(json)
 
 
-add_executable(consumer consumer.cpp)
+add_executable(${PROJECT_NAME} ${SRC_FILES})
 
-target_link_libraries(consumer PahoMqttCpp::paho-mqttpp3) 
-target_link_libraries(consumer eclipse-paho-mqtt-c::paho-mqtt3as)
-target_link_libraries(consumer OpenSSL::SSL)
-target_link_libraries(consumer SQLite::SQLite3)
-target_link_libraries(consumer nlohmann_json::nlohmann_json)
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    CXX_STANDARD 14)
+
+#set warnings
+if (MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX /wd4068)
+else ()
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wno-long-long -pedantic -Werror)
+endif ()
+
+find_package(aws-crt-cpp REQUIRED)
+
+target_link_libraries(${PROJECT_NAME} AWS::aws-crt-cpp)
+target_link_libraries(${PROJECT_NAME} SQLite::SQLite3)
+target_link_libraries(${PROJECT_NAME} nlohmann_json::nlohmann_json)
