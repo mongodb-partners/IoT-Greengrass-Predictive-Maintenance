@@ -38,6 +38,32 @@ export const getJobs = /* GraphQL */ `
     }
   }
 `;
+export const getJobsOfUser = /* GraphQL */ `
+  query GetJobsOfUser($assignedTo: String) {
+    getJobsOfUser(assignedTo: $assignedTo) {
+      _id
+      assignedTo {
+        _id
+        email
+        password
+        name
+        __typename
+      }
+      createdAt
+      notes
+      status
+      type
+      vehicleId {
+        _id
+        make
+        model
+        vin
+        __typename
+      }
+      __typename
+    }
+  }
+`;
 export const getUsers = /* GraphQL */ `
   query GetUsers {
     getUsers {

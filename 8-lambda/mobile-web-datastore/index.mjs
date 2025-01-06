@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 let cachedClient = null;
 let cachedDb = null;
@@ -25,6 +25,43 @@ async function connectToDatabase() {
         console.error("Error connecting to the database:", error);
         throw new Error("Database connection failed");
     }
+}
+
+async function getJobs(jobsCollection, _id) {
+    const jobs = await jobsCollection.aggregate([
+        {
+            $match: _id ? { _id: new ObjectId(_id) } : {}
+        },
+        {
+            $lookup: {
+                from: 'User',
+                localField: 'assignedTo',
+                foreignField: '_id',
+                as: 'assignedTo'
+            }
+        },
+        {
+            $unwind: {
+                path: '$assignedTo',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: 'Vehicle',
+                localField: 'vehicleId',
+                foreignField: '_id',
+                as: 'vehicleId'
+            }
+        },
+        {
+            $unwind: {
+                path: '$vehicleId',
+                preserveNullAndEmptyArrays: true
+            }
+        }
+    ]).toArray();
+    return jobs;
 }
 
 export const handler = async (event, context, callback) => {
@@ -57,36 +94,7 @@ export const handler = async (event, context, callback) => {
             case "getJobs": {
                 const db = await connectToDatabase();
                 const jobsCollection = db.collection("Job");
-                const jobs = await jobsCollection.aggregate([
-                    {
-                        $lookup: {
-                            from: 'User',
-                            localField: 'assignedTo',
-                            foreignField: '_id',
-                            as: 'assignedTo'
-                        }
-                    },
-                    {
-                        $unwind: {
-                            path: '$assignedTo',
-                            preserveNullAndEmptyArrays: true
-                        }
-                    },
-                    {
-                        $lookup: {
-                            from: 'Vehicle',
-                            localField: 'vehicleId',
-                            foreignField: '_id',
-                            as: 'vehicleId'
-                        }
-                    },
-                    {
-                        $unwind: {
-                            path: '$vehicleId',
-                            preserveNullAndEmptyArrays: true
-                        }
-                    }
-                ]).toArray();
+                let jobs = await getJobs(jobsCollection, nulll);
                 callback(null, jobs);
                 break;
             }
@@ -96,6 +104,19 @@ export const handler = async (event, context, callback) => {
                 const vehicles = await vehiclesCollection.find({}).toArray();
                 console.log("vehicles", vehicles)
                 callback(null, vehicles);
+                break;
+            }
+            case "updateJob": {
+                const { _id, status, notes } = event.arguments;
+                const db = await connectToDatabase();
+                const jobsCollection = db.collection("Job");
+                const job = await jobsCollection.updateOne({ _id: new ObjectId(_id) }, { $set: { status, notes } });
+                let jobs = await getJobs(jobsCollection, _id);
+                callback(null, jobs[0]);
+                break;
+            }
+            case "jobUpdated": {
+                callback(null, event.arguments);
                 break;
             }
 
