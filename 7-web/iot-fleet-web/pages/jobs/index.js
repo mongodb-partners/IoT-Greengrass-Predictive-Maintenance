@@ -15,6 +15,7 @@ const Job = () => {
 
     const { loading, data: jobsData } = useQuery(gql(getJobs));
     const { data: subscribedJob } = useSubscription(gql(jobUpdated));
+    console.log('subscribedJob: ', subscribedJob);
 
 
     useEffect(() => {
