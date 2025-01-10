@@ -4,7 +4,7 @@ let cachedClient = null;
 let cachedDb = null;
 
 const DB_NAME = "GreengrassIot";
-const MONGO_URI = "mongodb+srv://purplescrum:purplescrum@iot.trag1.mongodb.net/";
+const MONGO_URI = "mongodb+srv://whitescrum:whitescrum@iot-gg.5amcr.mongodb.net/";
 
 /**
  * Connect to the MongoDB database. Reuse connections for subsequent invocations.

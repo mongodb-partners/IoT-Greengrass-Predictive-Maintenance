@@ -1,0 +1,44 @@
+export type FormDataType = {
+  _id?: string;
+  full_name: string;
+  date_of_birth: null | Date;
+  age: number | null;
+  sex: string;
+  maritial_status: string;
+  address: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  telephone: string;
+  telephone_number: string;
+  job: string;
+  current_employer: string;
+  job_title: string;
+  present_employment_since: string;
+  monthly_income: number;
+  monthly_expenses: number;
+  other_sources_of_income: string;
+  status_of_existing_checking_account: string;
+  savings_account_bonds: string;
+  purpose: string;
+  credit_amount: number;
+  installment_rate_in_percentage_of_disposable_income: number;
+  duration_of_credit: number;
+  credit_history: string;
+  number_of_people_being_liable_to_provide_maintenance_for: number;
+  other_debtors_guarantors: string;
+  other_installment_plans: string;
+  number_of_existing_credits_at_this_bank: number;
+  present_residence_since: number;
+  property: string;
+  housing: string;
+  status?: string;
+  foreign_worker: string;
+  user?: string;
+};
+
+export type LoanApplicationProps = {
+  editable?: boolean;
+  formData: FormDataType;
+  setFormData: (arg: FormDataType) => void;
+};

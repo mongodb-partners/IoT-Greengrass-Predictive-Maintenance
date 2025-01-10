@@ -1,5 +1,5 @@
 {
-  "name": "datastore",
+  "name": "mdbtos3",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1692.0",
     "mongodb": "^6.12.0"
   }
 }
