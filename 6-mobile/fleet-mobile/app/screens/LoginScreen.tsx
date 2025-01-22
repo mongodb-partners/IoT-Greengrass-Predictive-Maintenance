@@ -12,6 +12,7 @@ import {
 import { login as loginMutation } from '../mutations';
 import { colors } from '../styles/colors';
 import { generateClient } from 'aws-amplify/api';
+import { createTable, getDBConnection } from '../sqlite/db-service';
 const logo = require('../styles/assets/logo-wekan.png');
 
 const client = generateClient();
@@ -29,10 +30,10 @@ export function LoginScreen() {
   const loginUser = async () => {
     setLoading(true);
     const response = await client.graphql({ query: loginMutation, variables: { email, password } });
-    console.log('response: ', response?.data?.login?._id);
     setLoading(false);
     if (response?.data?.login?._id) {
-      console.log('Yes--');
+      const db = await getDBConnection();
+      await createTable(db);
       await AsyncStorage.setItem('userId', response?.data?.login?._id);
       navigation.navigate('Home');
     } else {

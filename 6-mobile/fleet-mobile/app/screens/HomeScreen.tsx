@@ -15,6 +15,7 @@ import {
   saveJob,
   getJobs,
   createTable,
+  deleteTable,
   updateJob as updateJobSql,
 } from '../sqlite/db-service';
 
@@ -44,11 +45,7 @@ export default function HomeScreen() {
                 : prevJob,
             );
           } else {
-            if (currentJob.status == selectedStatus) {
-              return [...prevJobs, currentJob];
-            } else {
-              return [...prevJobs];
-            }
+            return [...prevJobs, currentJob];
           }
         });
         const db = await getDBConnection();
@@ -84,24 +81,7 @@ export default function HomeScreen() {
 
   const syncJobs = async () => {
     const db = await getDBConnection();
-    await createTable(db);
     const localJobs = await getJobs(db);
-    const {data}: any = await client.graphql({
-      query: getJobsOfUser,
-      variables: {
-        assignedTo: userId,
-        status: selectedStatus,
-      },
-    });
-
-    const graphqlJobs = data.getJobsOfUser;
-    for (const graphqlJob of graphqlJobs) {
-      const localJob = localJobs.find(_app => _app._id === graphqlJob._id);
-      if (!localJob) {
-        await saveJob(db, graphqlJob);
-      }
-    }
-
     for (let localJob of localJobs) {
       await client.graphql({
         query: updateJobMutation,
@@ -112,13 +92,25 @@ export default function HomeScreen() {
         },
       });
     }
+    const {data}: any = await client.graphql({
+      query: getJobsOfUser,
+      variables: {
+        assignedTo: userId,
+      },
+    });
+    const graphqlJobs = data.getJobsOfUser;
+    for (const graphqlJob of graphqlJobs) {
+      const localJob = localJobs.find(_app => _app._id === graphqlJob._id);
+      if (!localJob) {
+        await saveJob(db, graphqlJob);
+      }
+    }
   };
 
   useEffect(() => {
     async function fetch() {
       const db = await getDBConnection();
-      let jobsResponse = await getJobs(db, selectedStatus);
-      console.log('jobsResponse: ', jobsResponse);
+      let jobsResponse = await getJobs(db);
       setJobs(jobsResponse);
       setLoading(false);
     }
@@ -134,6 +126,20 @@ export default function HomeScreen() {
       _id: _job._id,
       status,
       notes,
+    });
+    setJobs((prevJobs: any) => {
+      const jobExists = prevJobs.some(
+        (prevJob: any) => prevJob._id === _job._id,
+      );
+      if (jobExists) {
+        return prevJobs.map((prevJob: any) =>
+          prevJob._id === _job._id && prevJob.status
+            ? {...prevJob, ..._job, status, notes}
+            : prevJob,
+        );
+      } else {
+        return prevJobs;
+      }
     });
     await client.graphql({
       query: updateJobMutation,
@@ -155,8 +161,10 @@ export default function HomeScreen() {
         <Pressable style={styles.authButton}>
           <Text
             style={styles.authButtonText}
-            onPress={() => {
+            onPress={async () => {
+              const db = await getDBConnection();
               AsyncStorage.clear();
+              await deleteTable(db);
               navigation.navigate('Login');
             }}>
             Log Out
@@ -164,7 +172,7 @@ export default function HomeScreen() {
         </Pressable>
       </View>
       <JobScreen
-        jobs={jobs}
+        jobs={jobs?.filter((job: any) => job.status === selectedStatus)}
         loading={loading}
         updateJob={updateJob}
         onTabChange={setSelectedStatus}

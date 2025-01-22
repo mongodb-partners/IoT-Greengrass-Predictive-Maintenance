@@ -15,8 +15,6 @@ const Job = () => {
 
     const { loading, data: jobsData } = useQuery(gql(getJobs));
     const { data: subscribedJob } = useSubscription(gql(jobUpdated));
-    console.log('subscribedJob: ', subscribedJob);
-
 
     useEffect(() => {
         if (jobsData?.getJobs) {
@@ -26,19 +24,23 @@ const Job = () => {
 
     useEffect(() => {
         if (subscribedJob) {
-            setJobs((prevJobs) =>
-                prevJobs.map((job) => {
-                    if (job._id === subscribedJob.jobUpdated._id) {
-                        return {
-                            ...job,  
-                            status: subscribedJob.jobUpdated.status ?? job.status,  
-                            notes: subscribedJob.jobUpdated.notes ?? job.notes,  
-                        };
-                    }
-                    return job;  
-                })
-            );
-
+            setJobs((prevJobs) => {
+                const jobExists = prevJobs.some((job) => job._id === subscribedJob.jobUpdated._id);
+                if (jobExists) {
+                    return prevJobs.map((job) => {
+                        if (job._id === subscribedJob.jobUpdated._id) {
+                            return {
+                                ...job,
+                                status: subscribedJob.jobUpdated.status ?? job.status,
+                                notes: subscribedJob.jobUpdated.notes ?? job.notes,
+                            };
+                        }
+                        return job;
+                    });
+                } else {
+                    return [...prevJobs, subscribedJob.jobUpdated];
+                }
+            });
         }
     }, [subscribedJob]);
 
