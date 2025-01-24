@@ -81,7 +81,7 @@ export default function HomeScreen() {
 
   const syncJobs = async () => {
     const db = await getDBConnection();
-    const localJobs = await getJobs(db);
+    let localJobs = await getJobs(db);
     for (let localJob of localJobs) {
       await client.graphql({
         query: updateJobMutation,
@@ -105,6 +105,8 @@ export default function HomeScreen() {
         await saveJob(db, graphqlJob);
       }
     }
+    localJobs = await getJobs(db);
+    setJobs(localJobs);
   };
 
   useEffect(() => {

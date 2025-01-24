@@ -21,7 +21,7 @@ export function LoginScreen() {
 
   const navigation = useNavigation();
 
-  const [email, setEmail] = useState('achu@live.in');
+  const [email, setEmail] = useState('technician@live.in');
   const [password, setPassword] = useState('123');
   const [hadError, setHadError] = useState(false);
   const [loading, setLoading] = useState(false);
