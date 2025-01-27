@@ -16,10 +16,10 @@ OPTIONS="-Droot=${GGC_ROOT_PATH} -Dlog.store=FILE -Dlog.level=${LOG_LEVEL} -jar 
 parse_options() {
 
 	# If provision is true
-	if [ ${PROVISION} == "true" ]; then
+	if [ ${PROVISION} = "true" ]; then
 
-		if [ ! -f "/root/.aws/credentials" ]; then
-			echo "Provision is set to true, but credentials file does not exist at /root/.aws/credentials . Please mount to this location and retry."
+		if [ ! -f "/root/.aws/credentials" ] && ([[ -z "${AWS_ACCESS_KEY_ID}" ]] || [[ -z "${AWS_SECRET_ACCESS_KEY}" ]]); then
+			echo "Provision is set to true, but credentials not found, neither file exist at /root/.aws/credentials nor set in environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, [AWS_SESSION_TOKEN]) . Please attach credentials and retry."
 			exit 1
 		fi
 
@@ -86,6 +86,11 @@ if [ ! -d $GGC_ROOT_PATH/alts/current/distro ]; then
 	echo "Installing Greengrass for the first time..."
 	parse_options
 	java ${OPTIONS}
+	if [ $? -ne 0 ]; then
+	  exit $?
+	elif [ "${STARTUP}" = "false" ]; then
+	  exit 0
+  fi
 else
 	echo "Reusing existing Greengrass installation..."
 fi
