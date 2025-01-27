@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import { SUPPORT_ASSISTANT_API } from '../../sync.config.js';
-import { makeApiCall } from '../utils/helpers';
+import { makeApiCall } from '../utils/helpers.js';
 
 type MessageType = {
   text: string;

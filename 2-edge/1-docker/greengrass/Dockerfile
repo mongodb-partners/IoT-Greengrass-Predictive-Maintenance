@@ -45,7 +45,6 @@ RUN apt-get update && \
     apt-get install -y openjdk-11-jre-headless && \
     apt-get clean;
 RUN apt install wget unzip -y
-# As required by Realm install below libraries
 RUN apt-get install -y build-essential libcurl4-openssl-dev libuv1-dev libprocps-dev libssl-dev zlib1g-dev cmake doxygen git
 RUN wget $GREENGRASS_RELEASE_URI && sha256sum -c ${GREENGRASS_ZIP_SHA256}
 RUN chmod +x /greengrass-entrypoint.sh

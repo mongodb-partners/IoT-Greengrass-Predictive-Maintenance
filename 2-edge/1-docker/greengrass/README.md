@@ -1,4 +1,4 @@
-# Realm Device Sync | Greengrass | MQTT
+# Greengrass | MQTT | Message Routing | SQLite
 --- 
 
 ## Prerequisites
@@ -10,9 +10,9 @@
 
 ## Overview
 
-Here we are building the docker image and running the container which will have pre-installed dependency libraries for Realm and Greengrass.
+Here we are building the docker image and running the container which will have pre-installed dependency libraries for SQLite and Greengrass.
 
-The following container will have a C++ application deployed via AWS Component that listens for the messages from a topic name `topic` and will parse and save the message received in it to Realm local database, which then syncs to Atlas via Device sync in real-time.
+The following container will have a C++ application deployed via AWS Component that listens for the messages from a topic name `topic` and will parse and save the message received in it to SQLite local database and parallely uses IoT Message Routing to send data to MongoDB Atlas
 
 
 Refer to this container as `CONSUMER CONTAINER` throughout the setup.
@@ -35,10 +35,10 @@ Refer to this container as `CONSUMER CONTAINER` throughout the setup.
 
 ### Instructions
 
-After building this image, it will consist of pre-installed libraries for the realm and Greengrass dependencies.
+After building this image, it will consist of pre-installed libraries for the SQLite and Greengrass dependencies.
 
 ```
-docker build -t realmgreengrass .
+docker build -t iotgreengrass .
 ```
 
  * **Note**: If you want to provision the device upon startup for cloud deployments, you will need to add the following lines to your docker-compose file to mount your AWS credentials into the container to be picked up at `/root/.aws/credentials`. Ensure that the `:ro` suffix is present at the end of the command to ensure read-only access. (This will build an image using long-term credentials from an IAM user). 

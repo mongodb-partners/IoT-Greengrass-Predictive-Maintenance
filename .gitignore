@@ -53,7 +53,6 @@ cli
 .env
 lib/
 
-mongodb-realm
 package-lock.json
 
 testing/
