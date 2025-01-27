@@ -1,15 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import NetInfo from '@react-native-community/netinfo';
-import React, {useEffect, useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {useTabManager} from '../hooks/useTabManager';
-import {updateJob as updateJobMutation} from '../mutations';
-import {jobUpdated as jobUpdatedSubscription} from '../subscriptions';
-import {getJobsOfUser} from '../queries';
-import {colors} from '../styles/colors';
-import {JobScreen} from './JobScreen';
-import {generateClient} from 'aws-amplify/api';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTabManager } from '../hooks/useTabManager';
+import { updateJob as updateJobMutation } from '../mutations';
+import { jobUpdated as jobUpdatedSubscription } from '../subscriptions';
+import { getJobsOfUser } from '../queries';
+import { colors } from '../styles/colors';
+import { JobScreen } from './JobScreen';
+import { generateClient } from 'aws-amplify/api';
 import {
   getDBConnection,
   saveJob,
@@ -24,14 +25,15 @@ const client = generateClient();
 export default function HomeScreen() {
   const navigation = useNavigation();
 
-  const {setSelectedStatus, selectedStatus} = useTabManager();
+  const [isConnected, setIsConnected] = useState(true);
+  const { setSelectedStatus, selectedStatus } = useTabManager();
   const [jobs, setJobs] = useState([]);
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [resetSync, setResetSync] = useState(false);
 
   const subscribeToJobs = async () => {
-    await client.graphql({query: jobUpdatedSubscription}).subscribe({
+    await client.graphql({ query: jobUpdatedSubscription }).subscribe({
       next: async (event: any) => {
         const currentJob = event.data.jobUpdated;
         setJobs((prevJobs: any) => {
@@ -41,7 +43,7 @@ export default function HomeScreen() {
           if (jobExists) {
             return prevJobs.map((prevJob: any) =>
               prevJob._id === currentJob._id && prevJob.status
-                ? {...prevJob, ...currentJob}
+                ? { ...prevJob, ...currentJob }
                 : prevJob,
             );
           } else {
@@ -56,21 +58,26 @@ export default function HomeScreen() {
   };
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      if (state.isConnected) {
-        setResetSync(!resetSync);
-      }
+    const unsubscribe = NetInfo.addEventListener((state: any) => {
+      setIsConnected(state.isConnected);
+      setResetSync(!resetSync);
     });
-    return () => {
-      unsubscribe();
-    };
+
+    return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    fetchUserId();
-    syncJobs();
-    subscribeToJobs();
-  }, [resetSync]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isConnected) {
+        fetchUserId();
+        syncJobs();
+        subscribeToJobs();
+      } else {
+        loadLocalJobs();
+      }
+    }, [isConnected]) 
+  );
 
   const fetchUserId = async () => {
     const storedUserId = await AsyncStorage.getItem('userId');
@@ -92,7 +99,7 @@ export default function HomeScreen() {
         },
       });
     }
-    const {data}: any = await client.graphql({
+    const { data }: any = await client.graphql({
       query: getJobsOfUser,
       variables: {
         assignedTo: userId,
@@ -106,6 +113,12 @@ export default function HomeScreen() {
       }
     }
     localJobs = await getJobs(db);
+    setJobs(localJobs);
+  };
+
+  const loadLocalJobs = async () => {
+    const db = await getDBConnection();
+    let localJobs = await getJobs(db);
     setJobs(localJobs);
   };
 
@@ -136,42 +149,54 @@ export default function HomeScreen() {
       if (jobExists) {
         return prevJobs.map((prevJob: any) =>
           prevJob._id === _job._id && prevJob.status
-            ? {...prevJob, ..._job, status, notes}
+            ? { ...prevJob, ..._job, status, notes }
             : prevJob,
         );
       } else {
         return prevJobs;
       }
     });
-    await client.graphql({
-      query: updateJobMutation,
-      variables: {
-        _id: _job._id,
-        status,
-        notes,
-      },
-    });
+    if (isConnected) {
+      await client.graphql({
+        query: updateJobMutation,
+        variables: {
+          _id: _job._id,
+          status,
+          notes,
+        },
+      });
+    }
     setResetSync(!resetSync);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+       
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Job List</Text>
         </View>
-        <Pressable style={styles.authButton}>
-          <Text
-            style={styles.authButtonText}
-            onPress={async () => {
-              const db = await getDBConnection();
-              AsyncStorage.clear();
-              await deleteTable(db);
-              navigation.navigate('Login');
-            }}>
-            Log Out
-          </Text>
-        </Pressable>
+       
+        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+          <Pressable style={styles.authButton}>
+            <Text
+              style={styles.authButtonText}
+              onPress={async () => {
+                const db = await getDBConnection();
+                AsyncStorage.clear();
+                await deleteTable(db);
+                navigation.navigate('Login');
+              }}>
+              Log Out
+            </Text>
+          </Pressable>
+          <View style={{
+            width: 15,
+            height: 15,
+            borderRadius: 10,
+            backgroundColor: isConnected ? 'green' : 'red'
+          }} ></View>
+        </View>
       </View>
       <JobScreen
         jobs={jobs?.filter((job: any) => job.status === selectedStatus)}
@@ -215,6 +240,7 @@ const styles = StyleSheet.create({
     color: colors.black,
   },
   authButton: {
+    marginRight: 20,
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderWidth: 1,
