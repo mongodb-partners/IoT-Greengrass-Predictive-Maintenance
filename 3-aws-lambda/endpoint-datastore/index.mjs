@@ -3,8 +3,8 @@ import { MongoClient, ObjectId } from "mongodb";
 let cachedClient = null;
 let cachedDb = null;
 
-const DB_NAME = "GreengrassIot";
-const MONGO_URI = "mongodb+srv://whitescrum:whitescrum@iot-gg.5amcr.mongodb.net/";
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://whitescrum:whitescrum@iot-gg.5amcr.mongodb.net/";
+const DB_NAME = process.env.MONGO_DATABASE || "GreengrassIot";
 
 /**
  * Connect to the MongoDB database. Reuse connections for subsequent invocations.
@@ -27,10 +27,21 @@ async function connectToDatabase() {
     }
 }
 
-async function getJobs(jobsCollection, _id) {
+async function getJobs(jobsCollection, params) {
+    const { _id, assignedTo, status } = params;
+    let matchQuery = {};
+    if (_id) {
+        matchQuery._id = new ObjectId(_id);
+    }
+    if (assignedTo) {
+        matchQuery.assignedTo = new ObjectId(assignedTo);
+    }
+    if (status) {
+        matchQuery.status = status;
+    }
     const jobs = await jobsCollection.aggregate([
         {
-            $match: _id ? { _id: new ObjectId(_id) } : {}
+            $match: matchQuery
         },
         {
             $lookup: {
@@ -94,7 +105,7 @@ export const handler = async (event, context, callback) => {
             case "getJobs": {
                 const db = await connectToDatabase();
                 const jobsCollection = db.collection("Job");
-                let jobs = await getJobs(jobsCollection, nulll);
+                let jobs = await getJobs(jobsCollection, {});
                 callback(null, jobs);
                 break;
             }
@@ -106,12 +117,20 @@ export const handler = async (event, context, callback) => {
                 callback(null, vehicles);
                 break;
             }
+            case "getJobsOfUser": {
+                const { assignedTo, status } = event.arguments;
+                const db = await connectToDatabase();
+                const jobsCollection = db.collection("Job");
+                const jobs = await getJobs(jobsCollection, { assignedTo, status });
+                callback(null, jobs);
+                break;
+            }
             case "updateJob": {
                 const { _id, status, notes } = event.arguments;
                 const db = await connectToDatabase();
                 const jobsCollection = db.collection("Job");
                 const job = await jobsCollection.updateOne({ _id: new ObjectId(_id) }, { $set: { status, notes } });
-                let jobs = await getJobs(jobsCollection, _id);
+                let jobs = await getJobs(jobsCollection, { _id });
                 callback(null, jobs[0]);
                 break;
             }

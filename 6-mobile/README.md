@@ -1,6 +1,6 @@
-# Fleet mobile app
+# Fleet Mobile app
 
-This React Native application enables users to manage their assigned jobs. The app is powered by Realm Device Sync https://www.mongodb.com/docs/realm/sdk/react-native/sync-data/configure-a-synced-realm/] for real-time synchronization of jobs.
+This React Native application enables users to manage their assigned jobs. The app is powered by App Sync GraphQL Endpoints for real-time synchronization of jobs.
 
 
 This project is bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
@@ -74,7 +74,7 @@ use '\_id' field to map Jobs with the user.
 
 ### Config
 
-Use sync.config.js to setup **AppID** and **AWS Lambda HTTP Url**.
+Use sync.config.js to setup **AWS Lambda HTTP Url**.
 
 ### Environment Configurations
 

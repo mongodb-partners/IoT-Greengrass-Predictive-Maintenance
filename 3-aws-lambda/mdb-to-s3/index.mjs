@@ -6,8 +6,9 @@ const s3 = new AWS.S3();
 let cachedClient = null;
 let cachedDb = null;
 
-const MONGO_URI = "mongodb+srv://whitescrum:whitescrum@iot-gg.5amcr.mongodb.net/";
-const DB_NAME = "GreengrassIot";
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://whitescrum:whitescrum@iot-gg.5amcr.mongodb.net/";
+const DB_NAME = process.env.MONGO_DATABASE || "GreengrassIot";
+const S3_BUCKET_NAME = process.env.S3_BUCKET || "S3_IIoT";
 
 
 /**
@@ -54,7 +55,7 @@ export const handler = async (event, context, callback) => {
                 return [obj.voltage, obj.current];
             });
             const params = {
-                Bucket: 'aws-iot-greengrass',
+                Bucket: S3_BUCKET_NAME,
                 Key: `IIoT/${String(value._id)}.txt`,
                 Body: `[${JSON.stringify(body)}]`
             }

@@ -1,6 +1,6 @@
 # Fleet Web
 
-This React.js application allows users to view vehicles, parts, and jobs. This uses Realm [Device sync for Web](https://www.mongodb.com/docs/realm/web/install/) to sync jobs in real-time whenever the jobs gets updated in the Atlas. 
+This React.js application allows users to view vehicles, parts, and jobs. This uses AppSync GraphQL Endpoints to sync jobs in real-time whenever the jobs gets updated in the Atlas. 
 
 ## Installation
 
@@ -38,9 +38,6 @@ To start the application, use the following commands:
 
     Once the development server starts, the application will be available at: `http://localhost:3000`.
 
-3. **Enable email-password authentication and create an App User with email and password in [Atlas App Services](https://www.mongodb.com/docs/atlas/app-services/users/create/#manually-create-an-email-password-user)**
-
-![AppUser](../media/app-services-user-create.png)
   
 ## Features
 
@@ -48,11 +45,6 @@ To start the application, use the following commands:
 
 - The application provides a section to view a list of vehicles.
 - Each vehicle listing might include details such as make, model, vin etc.
-
-### Viewing Parts
-
-- Users can access a section to view different parts available.
-- Part listings may include details like part number, vehicle etc.
 
 ### Viewing Jobs
 

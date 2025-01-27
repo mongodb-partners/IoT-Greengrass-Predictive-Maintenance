@@ -14,9 +14,9 @@ global.Response = Response;
 import { generateClient } from 'aws-amplify/api';
 import { Amplify } from 'aws-amplify';
 
-const API_KEY = process.env.apiKey || 'da2-56awvkvezzhrdmjjojeu7gxzq4';
-const ENDPOINT = process.env.endpoint || 'https://jobb23cqzjalbgqogvrdwfqo3u.appsync-api.us-east-1.amazonaws.com/graphql';
-const REGION = process.env.region || 'us-east-1';
+const API_KEY = process.env.API_KEY || 'da2-56awvkvezzhrdmjjojeu7gxzq4';
+const ENDPOINT = process.env.ENDPOINT || 'https://jobb23cqzjalbgqogvrdwfqo3u.appsync-api.us-east-1.amazonaws.com/graphql';
+const REGION = process.env.REGION || 'us-east-1';
 
 Amplify.configure({
     API: {
