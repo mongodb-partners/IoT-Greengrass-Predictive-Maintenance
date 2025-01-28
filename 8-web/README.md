@@ -18,6 +18,21 @@ To get started with the application, follow these steps:
     npm install
     ```
 
+## Configuration
+
+Go to AWS App Sync and Download the config
+
+[App Sync](../../media/app-sync-config.png)
+
+Paste the `aws-exports.js` file in the root of the project
+
+Use below command to generate GraphQL Schemas, Queries, Mutations and Subscriptions 
+
+```
+npx @aws-amplify/cli codegen add --apiId <APP_ID> --region <AWS_REGION>
+```
+
+
 
 ## Usage
 

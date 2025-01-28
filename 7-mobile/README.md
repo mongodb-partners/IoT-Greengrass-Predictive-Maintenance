@@ -12,7 +12,7 @@ This project is bootstrapped using [`@react-native-community/cli`](https://githu
 
 ## Configuration
 
-Update the AWS Lambda http url for the chat assistant inside the `sync.config.js` 
+Update the AWS Lambda http url for the chat assistant inside the `app.config.js` 
 
 
 ### Node Modules install
@@ -30,7 +30,26 @@ cd ios && pod install && cd ..
 ```
 
 
-### Step 1: Start the Metro Server
+### Step 1: Configuration
+
+Go to AWS App Sync and Download the config
+
+[App Sync](../../media/app-sync-config.png)
+
+
+Paste the `aws-exports.ts` file in the root of the project, and place it in the root of the project
+
+
+Use below command to generate GraphQL Schemas, Queries, Mutations and Subscriptions 
+
+```
+npx @aws-amplify/cli codegen add --apiId <APP_ID> --region <AWS_REGION>
+```
+
+
+First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+
+### Step 2: Start the Metro Server
 
 
 First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
@@ -46,7 +65,7 @@ npm start
 yarn start
 ```
 
-### Step 2: Start your Application
+### Step 3: Start your Application
 
 Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
 
@@ -66,14 +85,11 @@ npx react-native run-android
 
 If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
 
-### Creating User
 
-Register from the app, and then use the same information to log in later. it will create a entry in User collection.
-use '\_id' field to map Jobs with the user.
 
 ### Config
 
-Use sync.config.js to setup **AWS Lambda HTTP Url**.
+Use app.config.js to setup **AWS Lambda HTTP Url**.
 
 ### Environment Configurations
 

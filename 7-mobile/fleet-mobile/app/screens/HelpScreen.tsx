@@ -10,7 +10,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { SUPPORT_ASSISTANT_API } from '../../sync.config.js';
+import { SUPPORT_ASSISTANT_API } from '../../app.config.js';
 import { makeApiCall } from '../utils/helpers.js';
 
 type MessageType = {

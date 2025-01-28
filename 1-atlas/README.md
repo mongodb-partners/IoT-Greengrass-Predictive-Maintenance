@@ -9,6 +9,4 @@
 2. Under the Database tab, click "Build A Database" and [create a free MongoDB cluster](https://www.mongodb.com/docs/atlas/tutorial/create-new-cluster/) in your preferred region and name it ```fleet-db```. 
 *You need to choose a Dedicated cluster.*
 
-
-
 Import the Sample data in the Created cluster using the steps here [sample-data](./sample-data/README.md)
