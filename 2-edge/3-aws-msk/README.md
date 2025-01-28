@@ -53,4 +53,4 @@ key.converter=org.apache.kafka.connect.storage.StringConverter
 ![MSK Connector](../../media/msk-connector.png)
 
 
-Lets move to the next step [3-aws-greensgrass-telemetry](../../../3-aws-greengrass-telemetry) to generate and consume the telemetry data.
+Lets move to the next step [3-aws-greensgrass-telemetry](../../3-aws-greengrass-telemetry) to generate and consume the telemetry data.

@@ -203,4 +203,4 @@ cd /greengrass/v2/packages/artifacts-unarchived/cpp.consumer.iot/1.0.0
 ```
 
 
-Now lets setup [AWS Message Routing & AWS MSK to send the data to Atlas](../../../3-aws-msk/README.md)
+Now lets setup [AWS Message Routing & AWS MSK to send the data to Atlas](../../../3-aws-msk/)
