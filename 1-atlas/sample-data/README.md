@@ -1,4 +1,4 @@
-# Vehicle Data Import into MongoDB
+# Import into MongoDB
 
 This guide provides a simple method to import user and vehicle data into a MongoDB database using the `mongoimport` tool.
 
@@ -12,8 +12,12 @@ This guide provides a simple method to import user and vehicle data into a Mongo
 
 ## Import 
 
+```
 mongoimport --uri "mongodb+srv://username:password@cluster.mongodb.net/databaseName" --collection User --file User.json --jsonArray
+```
 
-mongoimport --uri "mongodb+srv://username:password@cluster.mongodb.net/databaseName" --collection Vehicle --file Vehicle.json --jsonArray
+```
+mongoimport --uri "mongodb+srv://whitescrum:whitescrum@iot-gg.5amcr.mongodb.net/" --collection Vehicless --file Vehicle.json --jsonArray
+```
 
-
+Now lets move to [Edge Setup README](../../2-edge/README.md)
