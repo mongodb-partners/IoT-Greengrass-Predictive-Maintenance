@@ -18,11 +18,6 @@ To get started with the application, follow these steps:
     npm install
     ```
 
-## Configuration
-
-Update the App Services Application ID in the config file
-
-![AppUser](../media/fleet-ui-config-update.png)
 
 ## Usage
 
