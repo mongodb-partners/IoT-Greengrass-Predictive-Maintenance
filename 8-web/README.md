@@ -50,3 +50,5 @@ To start the application, use the following commands:
 
 - The application offers a section to view available jobs.
 - Job listings can contain information such as status, notes, assignee, etc.
+
+Now let's [Run the Fleet Admin Portal](../8-web/)

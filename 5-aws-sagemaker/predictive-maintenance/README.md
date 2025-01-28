@@ -98,3 +98,6 @@ In the Select, a source dropdown, choose S3, fill in the prefix (the one used in
 You can also update the threshold value in the environment variables of the lambda. This threshold limit increases the probablity of the creation of jobs based on the current and voltage value received from the sensors.
 
 ![Threshold Value](../../media/lambda-env-threshold.png)
+
+
+Now let's [Setup the AWS Bedrock](../../6-aws-bedrock/)

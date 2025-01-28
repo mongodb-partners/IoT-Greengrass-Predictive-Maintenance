@@ -126,3 +126,6 @@ MONGODB_DB_COLLECTION<br>
 ![Lambda env vars](../media/chat-env-vars.png)
 
 Fill in the values with your cluster's connection string, db name, and collection name, and save.
+
+
+Now let's [Run the Technician Mobile App](../7-mobile/)
