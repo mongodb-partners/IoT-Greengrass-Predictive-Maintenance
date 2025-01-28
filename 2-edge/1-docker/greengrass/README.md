@@ -69,4 +69,4 @@ Check if the device is created successfully in the AWS IoT Greengrass console.Th
 ![Screenshot of IoT Greengrass devices](image.png)
 
 
-Congratulations!! you have successfully set up the Greengrass container. Now let's move to set up the container for [./vehicle1](../vehicle1/)  
+Congratulations!! you have successfully set up the Greengrass container. Now let's move to [Deploy MQTT Consumer to Edge Gateway](../../2-edge/cpp/consumer/README.md)  
