@@ -14,7 +14,7 @@ This guide outlines the steps to set up IoT message routing to send data to **AW
 
    2. Create a Rule under Message Routing in AWS IoT to send the Device Telemetry to a Lambda function which will store the Telemetry data in MongoDB
 
-![Message Routing](../../media/telemetry-emitter.png)
+![Message Routing](../../media/telemetry-emitter-iot.png)
 
 
 
@@ -53,4 +53,4 @@ key.converter=org.apache.kafka.connect.storage.StringConverter
 ![MSK Connector](../../media/msk-connector.png)
 
 
-
+Lets move to the next step [3-aws-greensgrass-telemetry](../../../3-aws-greengrass-telemetry) to generate and consume the telemetry data.

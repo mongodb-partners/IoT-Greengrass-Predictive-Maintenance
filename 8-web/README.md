@@ -31,7 +31,7 @@ To start the application, use the following commands:
 1. **Start the development server:**
 
     ```bash
-    npm start
+    npm run dev
     ```
 
 2. **Open your browser:**
