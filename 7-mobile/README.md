@@ -12,9 +12,8 @@ This project is bootstrapped using [`@react-native-community/cli`](https://githu
 
 ## Configuration
 
-Update the App Services Application ID and AWS Lambda http url for the chat assistant inside the `sync.config.js` 
+Update the AWS Lambda http url for the chat assistant inside the `sync.config.js` 
 
-   ![DS](../media/update-mobile-app-config.png)
 
 ### Node Modules install
 
@@ -109,3 +108,5 @@ Use sync.config.js to setup **AWS Lambda HTTP Url**.
 
 - The users can seek assistance from experts through the help section via chat, addressing queries related to parts availability and more.
 - The chat conversations are saved locally and can be utilized for future references. 
+
+Now let's [Run the Fleet Admin Portal](../8-web/)
