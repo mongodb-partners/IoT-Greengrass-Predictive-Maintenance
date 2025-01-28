@@ -203,16 +203,4 @@ cd /greengrass/v2/packages/artifacts-unarchived/cpp.consumer.iot/1.0.0
 ```
 
 
-**Application Services Logs(Sync):**
-
-<img width="1583" alt="image" src="https://github.com/mongodb-partners/IoT_Greengrass_Realm_GenAI_framework/assets/101570105/61260542-d6a1-4f02-bf1a-40d4e5ae1fe4">
-
-
-
-**MongoDB Atlas**
-
-<img width="882" alt="image" src="https://github.com/mongodb-partners/IoT_Greengrass_Realm_GenAI_framework/assets/101570105/79ff4fdf-71dd-4a30-9cc9-1d4c2be6ac00">
-
-
-
-
+Now lets setup [AWS Message Routing & AWS MSK to send the data to Atlas](../../../3-aws-msk/README.md)
