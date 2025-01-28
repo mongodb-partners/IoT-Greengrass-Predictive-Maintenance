@@ -10,6 +10,10 @@ Let's set up the Docker containers to create the Greengrass components such as t
 
 [Deploy MQTT Consumer to Edge Gateway](./2-edge/cpp/consumer/README.md)
 
+## 3. Setup IoT Message Routing with Mongo Source Connector
+
+[Deploy MQTT Consumer to Edge Gateway](./3-aws-msk/README.md)
+
 ## 3. Set up Vehicle Simulator to send Telemetry
 
 After deploying the MQTT consumer application via AWS,
