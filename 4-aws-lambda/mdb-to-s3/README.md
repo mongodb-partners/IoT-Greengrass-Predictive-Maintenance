@@ -9,3 +9,5 @@ MONGO_URI=
 DB_NAME=
 S3_BUCKET_NAME=
 ```
+
+Now let's switch to [Mongo Subscription](../mongo-subscription/) setup.

@@ -9,3 +9,5 @@ API_KEY=
 ENDPOINT=
 REGION=
 ```
+
+Now let's [Setup the AWS Sagemaker](../../5-aws-sagemaker/predictive-maintenance/) setup.

@@ -8,3 +8,5 @@ Create the lambda function `endpoint-datastore` and set the below environment va
 MONGO_URI=
 DB_NAME=
 ```
+
+Now let's switch to [MDB to S3](../mdb-to-s3/) setup.

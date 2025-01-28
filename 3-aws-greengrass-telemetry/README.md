@@ -6,7 +6,7 @@ To set it up,
 
 1. Deploying the Nucleus Telemetry emitter to send the telemetry data to the AWS Cloud Lambda function via Message Routing 
 
-![Telemetry](../../media/telemetry-emitter.png)
+![Telemetry](../media/telemetry-emitter.png)
 
 
 2. Deploy the lambda function to write the telemetry data in the MongoDB Collection
@@ -18,5 +18,5 @@ MONGO_URI=
 DB_NAME=
 ```
 
-3. Hurray!! completed halfway through!! Now let's switch to [Lambda](../4-aws-lambda) setup.
+3. Hurray!! completed halfway through!! Now let's switch to [Lambda Endpoint Datastore](../4-aws-lambda/endpoint-datastore/) setup.
 
