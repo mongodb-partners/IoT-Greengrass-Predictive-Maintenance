@@ -147,7 +147,7 @@ Trust Relationship:
 
 7. Create an AWS Greengrass Component using the console or aws-cli https://docs.aws.amazon.com/greengrass/v2/developerguide/create-components.html
 
-![Create Component](../../../../media/create-comp.png)
+![Create Component](../../../../images/create-comp.png)
 4. Recipe example. Update the S3 bucket path.
 ```sh
 RecipeFormatVersion: "2020-01-25"
@@ -175,7 +175,7 @@ Lifecycle: {}
 
 5. Once the component is created, open the component and deploy it to a Greengrass device using the Deploy option and create a new deployment by entering the Greengrass core device. select the target type as core device and copy the core device name. Select ```cpp.consumer.iot``` in the My Components list. Select ```cpp.consumer.iot``` in the Selected components. Keep all other options as default.
  
-![Component Deployment](../../../../media/comp-deployment.png)
+![Component Deployment](../../../../images/comp-deployment.png)
 6. Wait for a few minutes for the deployment to be completed. Now the producer can produce a message to the topic which will be consumed by this application deployed using the components. 
 
 <img width="1686" alt="image" src="https://github.com/mongodb-partners/IoT_Greengrass_Realm_GenAI_framework/assets/101570105/c03ea136-816c-4d85-ad7c-7ebcd4632cae">
