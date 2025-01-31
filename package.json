@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@aws-cdk/aws-msk-alpha": "^2.177.0-alpha.0",
-    "@aws-sdk/client-iot": "^3.738.0"
-  }
-}
