@@ -94,48 +94,35 @@ async function deployStack() {
     const notebookInstanceName = solution + "-notebook-instance";
     const lifecycleConfigName = solution + "-lifecycle-config";
 
-    // const awsAccountId = await input({
-    //   message: "Enter your AWS Account ID",
-    // });
+    const awsAccountId = await input({
+      message: "Enter your AWS Account ID",
+    });
 
-    // const awsRegion = await input({
-    //   message: "Enter your AWS Region",
-    // });
+    const awsRegion = await input({
+      message: "Enter your AWS Region",
+    });
 
-    // const atlasOrgId = await input({
-    //   message: "Enter your MongoDB Organization ID",
-    // });
+    const atlasOrgId = await input({
+      message: "Enter your MongoDB Organization ID",
+    });
 
-    // const atlasOrgPublicKey = await input({
-    //   message: "Enter your MongoDB Atlas Public Key",
-    // });
+    const atlasOrgPublicKey = await input({
+      message: "Enter your MongoDB Atlas Public Key",
+    });
 
-    // const atlasOrgPrivateKey = await input({
-    //   message: "Enter your MongoDB Atlas Private Key",
-    // });
+    const atlasOrgPrivateKey = await input({
+      message: "Enter your MongoDB Atlas Private Key",
+    });
 
-    // const awsAccessKey = await input({
-    //   message: "Enter your AWS access Key",
-    // });
+    const awsAccessKey = await input({
+      message: "Enter your AWS access Key",
+    });
 
-    // const awsSecretKey = await input({
-    //   message: "Enter your AWS secret Key",
-    // });
+    const awsSecretKey = await input({
+      message: "Enter your AWS secret Key",
+    });
 
 
-    const awsAccountId = "944069471838"
-
-    const awsRegion = "us-east-1"
-
-    const atlasOrgId = "675976777dacdb4387f3e8b0"
-
-    const atlasOrgPublicKey = "niajwqbo"
-
-    const atlasOrgPrivateKey = "5d0fd5e3-eb53-4908-bca7-ada381b123db"
-
-    const awsAccessKey = "AKIA5XTXM5ZPESKHGTXA"
-
-    const awsSecretKey = "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"
 
 
 
