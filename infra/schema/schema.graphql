@@ -1,0 +1,49 @@
+type Job {
+	_id: String
+	assignedTo: User
+	createdAt: String
+	notes: String
+	status: String
+	type: String
+	vehicleId: Vehicle
+}
+
+type User {
+	_id: String
+	email: String
+	password: String
+	name: String
+}
+
+type Vehicle {
+	_id: String
+	make: String
+	model: String
+	vin: String
+}
+
+type Mutation {
+	login(email: String, password: String): User
+	updateJob(_id: String, status: String, notes: String): Job
+}
+
+type Query {
+	getUser(_id: String!): User
+	getJobs: [Job]
+	getJobsOfUser(assignedTo: String, status: String): [Job]
+	getUsers: [User]
+	getVehicles: [Vehicle]
+}
+
+type Subscription {
+	jobAdded: Job
+		@aws_subscribe(mutations: ["updateJob"])
+	jobUpdated: Job
+		@aws_subscribe(mutations: ["updateJob"])
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+	subscription: Subscription
+}

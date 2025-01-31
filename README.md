@@ -1,43 +1,79 @@
-# AWS IoT Greengrass | AWS Sagemaker | AWS Bedrock | AWS MSK | MongoDB Atlas  | MongoDB Atlas Vector Search
+### Project Overview
+
+This is a Cloud Infrastructure Automation Project for an IoT Greengrass Fleet Predictive Maintenance project. The project uses various combinations of tools such as AWS CDK, AWS SDK, AWS CLI, and ATLAS CLI to automate the infrastructure. The automation includes setting up the AWS environment and MongoDB, provisioning a MongoDB cluster, deploying and configuring AWS AppSync, setting up MongoDB triggers with AWS EventBridge, configuring MongoDB Private Endpoints, setting up MSK with the Mongo Connector, deploying the Fleet Predictive Maintenance Model, and configuring various Lambda functions. These functions include invoking a SageMaker model for pulling and pushing data to/from MongoDB, chat assistants, Lambdas for AppSync resolvers and subscriptions, and much more.
+
+---
+
+### Prerequisites
+
+Before proceeding, ensure you have the following prerequisites installed:
+
+- Install Node.js 20.x (or use nvm to switch versions - [NVM Installation Guide](https://github.com/nvm-sh/nvm))
+- [Install Python3.13](https://www.python.org/downloads/)
+
+---
 
 ## High level Architecture
 
-![architecture](./media/hla.png)
+![architecture](./images/hla.png)
 
 ## Setup Instructions
 
-### Part 1. Set up Atlas Predictive Maintenance Backend
+### Part 1. AWS Setup
 
-[Set up Atlas Predictive Maintenance Backend](./1-atlas/)
+[Setup AWS](./aws-setup/)
 
-### Part 2. Set up Edge Gateway
+### Part 2. MongoDb Setup
 
-[Set up Edge Gateway](./2-edge/)
+[Setup Mongodb](./mongodb-setup/)
 
-### Part 3. Set up AWS Backend for Edge Gateway Greengrass Runtime Telemetry
+### Part 3. Infra Deployment
 
-[Set up AWS Backend for Edge Gateway Greengrass Runtime Telemetry](./3-aws-greengrass-telemetry/README.md)
+[Deploy Infrastructure](./infra/)
 
-### Part 4. Set up AWS Lambda Functions
+### Part 4. Edge Setup
 
-[Set up AWS Lambda Functions](./4-aws-lambda/predictive-maintenance/README.md)
+[Setup Edge](./edge/)
 
-### Part 5. Set up AWS Backend for Predictive Maintenance
-
-[Set up AWS Backend for Predictive Maintenance](./5-aws-sagemaker/predictive-maintenance/README.md)
-
-### Part 6. Set up the Backend for the Chat Assistant
-
-[Set up AWS Backend for the Chat Assistant](./6-aws-bedrock/README.md)
-
-### Part 7. Set up Field Technician's Mobile Application
+### Part 5. Set up Field Technician's Mobile Application
 
 With the previous steps done, vehicle telemetry would flow to MongoDB, then to AWS and finally be used to do predictive maintenance. If we determine a vehicle needs service, a vehicle maintenance job is created in MongoDB. These are shown in this mobile application.
 
-[Set up Field Technician's Mobile Application](./7-mobile/)
+[Set up Field Technician's Mobile Application](./mobile/)
 
-### Part 8. Set up Fleet Dashboard
+### Part 6. Set up Fleet Dashboard
 
 The Fleet dashboard shows all vehicle maintenance jobs, vehicle information, and parts inventory.
 
-[Set up Fleet Dashboard](./8-web/README.md) holds the code for the web dashboard. This shows information about the fleet.
+[Set up Fleet Dashboard](./web/README.md) holds the code for the web dashboard. This shows information about the fleet.
+
+
+
+### Part 7: Destroy Architecture
+
+Some resources need to be manually deleted, as they are not part of the CDK deployment and were created using the CLI/SDK based on CDK outputs. These include:
+
+- **Atlas Private Endpoint & AWS VPC Endpoint**  
+   - Go to Atlas > Network Access > Private Endpoints > Terminate the endpoint.
+   - Go to AWS > VPC > Endpoints > Delete the newly created endpoint.
+
+- **MSK Connector & Plugin**  
+    - Go to AWS > MSK > Connectors > Delete `msk-mdb-connector`.
+    - Go to AWS > MSK > Plugins > Delete `msk-mdb-connector-plugin`.
+
+- **VPC Destination & IoT Rules**  
+    - Go to AWS > IoT > Message Routing > Destinations > Delete the newly created destination.
+    - Go to AWS > IoT > Message Routing > Rules > Delete `all_events_rule` and `logs_rule`.
+
+- **SageMaker Notebook Instance and Lifecycle Configuration**  
+    - Go to AWS > SageMaker AI > Notebook > Stop the `iot-greengrass-demo-notebook-instance`, and then delete it.
+    - Go to AWS > SageMaker AI > Lifecycle Configuration > Notebook Instances > Delete `iot-greengrass-demo-lifecycle-config`.
+
+- **Destroy the CDK Stack**  
+    - Go to the `infra` folder and destroy the stack:
+        ```bash
+        cd ./infra
+        cdk destroy --context orgId=your-mongodb-org-id
+        ```
+
+

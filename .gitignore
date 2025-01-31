@@ -56,3 +56,6 @@ lib/
 package-lock.json
 
 testing/
+
+user_inputs.json
+outputs.json
