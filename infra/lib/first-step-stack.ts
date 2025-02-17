@@ -8,10 +8,7 @@ import * as sagemaker from 'aws-cdk-lib/aws-sagemaker';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3Deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as iot from 'aws-cdk-lib/aws-iot';
 import * as msk from 'aws-cdk-lib/aws-msk';
-import * as targets from 'aws-cdk-lib/aws-events-targets';
-import * as events from 'aws-cdk-lib/aws-events';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
 import * as kms from 'aws-cdk-lib/aws-kms';
 import { AccountRecovery, CfnIdentityPool, UserPool, UserPoolClient, VerificationEmailStyle } from 'aws-cdk-lib/aws-cognito';
@@ -245,18 +242,12 @@ export class FirstStepStack extends cdk.Stack {
       schema: appsync.SchemaFile.fromAsset(path.join(__dirname, '../schema/schema.graphql')),
       authorizationConfig: {
         defaultAuthorization: {
-          authorizationType: appsync.AuthorizationType.USER_POOL,
-          userPoolConfig: {
-            userPool,
-          },
+          authorizationType: appsync.AuthorizationType.API_KEY,
         },
         additionalAuthorizationModes: [
           {
             authorizationType: appsync.AuthorizationType.IAM,
-          },
-          {
-            authorizationType: appsync.AuthorizationType.API_KEY,
-          },
+          }
         ],
       },
       logConfig: {
@@ -473,25 +464,16 @@ export class FirstStepStack extends cdk.Stack {
       isDefault: true
     }).publicSubnets.map(subnet => subnet.subnetId);
 
-    const kafkaVpc = new ec2.Vpc(this, 'KafkaVpc', {
-      maxAzs: 2,
-      natGateways: 1,
-    });
-
-    // Create subnets for Kafka VPC
-    const kafkaSubnets = kafkaVpc.privateSubnets.map(subnet => subnet.subnetId);
-    const kafkaPublicSubnets = kafkaVpc.publicSubnets.map(subnet => subnet.subnetId);
+   
 
     // Security Group for MSK
     const mskSecurityGroup = new ec2.SecurityGroup(this, 'MskSecurityGroup', {
-      vpc: kafkaVpc,
+      vpc: vpc,
       allowAllOutbound: true,
     });
 
-    mskSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(9098), 'Allow Kafka Access');
-    mskSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(9096), 'Allow Kafka Access');
-    mskSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(9094), 'Allow Kafka Access');
-    mskSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(9092), 'Allow Kafka Access');
+    mskSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.allTraffic(), 'Allow all traffic');
+
 
     // Output the VPC ID
     new cdk.CfnOutput(this, 'vpcId', {
@@ -500,12 +482,6 @@ export class FirstStepStack extends cdk.Stack {
       exportName: 'DefaultVpcId',
     });
 
-    // Output the VPC ID
-    new cdk.CfnOutput(this, 'kafkaVpcId', {
-      value: kafkaVpc.vpcId,
-      description: 'The ID of the default VPC',
-      exportName: 'KafkaVpcId',
-    });
 
     // Output the subnet IDs
     new cdk.CfnOutput(this, 'VpcSubnetIds', {
@@ -514,18 +490,7 @@ export class FirstStepStack extends cdk.Stack {
       exportName: 'DefaultPublicSubnetIds',
     });
 
-    // Output the subnet IDs
-    new cdk.CfnOutput(this, 'KafkaSubnetIds', {
-      value: JSON.stringify(kafkaSubnets),
-      description: 'The IDs of the public subnets in the default VPC',
-      exportName: 'KafkaPrivateSubnetIds',
-    });
 
-    new cdk.CfnOutput(this, 'KafkaPublicSubnetIds', {
-      value: JSON.stringify(kafkaPublicSubnets),
-      description: 'The IDs of the public subnets in the default VPC',
-      exportName: 'KafkaPublicSubnetIds',
-    });
 
     // Output the Security Group ID
     new cdk.CfnOutput(this, 'MskSecurityGroupId', {
@@ -591,22 +556,14 @@ export class FirstStepStack extends cdk.Stack {
 
 
 
-    // iotRole.addToPolicy(
-    //   new iam.PolicyStatement({
-    //     actions: ['secretsmanager:GetSecretValue'],
-    //     resources: [kafkaSecret.secretArn],
-    //   })
-    // );
-
-
     // Create an MSK cluster
     const mskCluster = new msk.CfnCluster(this, 'MskCluster', {
       clusterName: 'IoTToMskCluster',
       kafkaVersion: '3.2.0',
       numberOfBrokerNodes: 4,
       brokerNodeGroupInfo: {
-        instanceType: 'kafka.m5.large',
-        clientSubnets: kafkaVpc.privateSubnets.map(subnet => subnet.subnetId),
+        instanceType: 'kafka.t3.small',
+        clientSubnets: subnetIds.slice(0, 2),
         securityGroups: [mskSecurityGroup.securityGroupId],
       },
       clientAuthentication: {
@@ -616,7 +573,8 @@ export class FirstStepStack extends cdk.Stack {
           },
           scram: {
             enabled: true // Proper ScramProperty format
-          }
+          },
+       
         }
       }
     });
@@ -783,7 +741,7 @@ export class FirstStepStack extends cdk.Stack {
 
     // Lambda function for writing telemetry data to mongo
     const LambdaTelemetry = new lambda.Function(this, 'LambdaTelemetry', {
-      runtime: lambda.Runtime.NODEJS_16_X,
+      runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(__dirname, '../resources/lambdas/telemetry-lambda'), {}),
       functionName: 'LambdaTelemetry',
@@ -889,7 +847,7 @@ export class FirstStepStack extends cdk.Stack {
     // mdb-s3
 
     const mdbS3lambdaFn = new lambda.Function(this, `${projectName}mdbS3`, {
-      runtime: lambda.Runtime.PYTHON_3_11,
+      runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset('resources/lambdas/mdb-s3'),
       memorySize: 1024,

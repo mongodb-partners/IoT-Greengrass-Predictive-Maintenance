@@ -124,8 +124,6 @@ async function deployStack() {
 
 
 
-
-
     // Deploy AWS + Mongodb CDK Infra 
 
 
@@ -153,12 +151,12 @@ async function deployStack() {
 
     // Create Lifecycle Script + Notebook Instance for Sagemaker
 
-    try {
-      const sagemakerClient = new SageMakerClient({ region: awsRegion });
-      await setupSagemaker(solution, awsAccountId, awsRegion, sagemakerClient, lifecycleConfigName, notebookInstanceName);
-    } catch (error) {
-      console.log("Error Setting Up Sagemaker : ", error);
-    }
+    // try {
+    //   const sagemakerClient = new SageMakerClient({ region: awsRegion });
+    //   await setupSagemaker(solution, awsAccountId, awsRegion, sagemakerClient, lifecycleConfigName, notebookInstanceName);
+    // } catch (error) {
+    //   console.log("Error Setting Up Sagemaker : ", error);
+    // }
 
     // Upload Mongo Connector Apache Kafka Plugin to S3
 
@@ -182,7 +180,7 @@ async function deployStack() {
 
     // Create Custom MSK plugin for Mongodb Sink Connector
 
-    
+
     const outputfilePath = "outputs.json";
     const data = fs.readFileSync(outputfilePath, "utf8");
 
@@ -195,13 +193,35 @@ async function deployStack() {
     console.log('Mongo Connection string: ', mongoConnStr);
 
 
+
+    // Setup Mongodb Private Link With AWS 
+
+    try {
+
+      if (details) {
+        const vpcId = details.vpcId;
+        const subnetIds = JSON.parse(details.VpcSubnetIds);
+        const atlasProjectId = details.AtlasProjectId;
+
+        await setupPrivateLink({ atlasProjectId, region: awsRegion, subnetIds, vpcId })
+
+      }
+    } catch (error) {
+      console.log("Error setting up private endpoint: ", error);
+    }
+
+
+    // Ask for private endpoint connection string
+
+    const privateMongoConnStr = await askUserForInput("Enter the private endpoint connection string: ");
+
     // Construct the connector configuration JSON
     const connectorConfig = JSON.stringify({
       "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
       database: "GreengrassIot",
       "tasks.max": "1",
       topics: "test-topic",
-      "connection.uri": mongoConnStr,
+      "connection.uri": privateMongoConnStr,
       collection: "SensorData",
       "value.converter": "org.apache.kafka.connect.storage.StringConverter",
       "key.converter": "org.apache.kafka.connect.storage.StringConverter",
@@ -217,9 +237,9 @@ async function deployStack() {
           securityGroups: Array.isArray(details.MskSecurityGroupId)
             ? details.MskSecurityGroupId
             : [details.MskSecurityGroupId],
-          subnets: typeof details.KafkaSubnetIds === "string"
-            ? JSON.parse(details.KafkaSubnetIds)
-            : details.KafkaSubnetIds,
+          subnets: typeof details.VpcSubnetIds === "string"
+            ? JSON.parse(details.VpcSubnetIds)
+            : details.VpcSubnetIds,
         },
         pluginS3BucketArn: details.ConnectorBucketArn,
         pluginS3Bucket: "iot-greengrass-connector-bucket",
@@ -248,11 +268,11 @@ async function deployStack() {
 
       await createVpcDestination(
         awsRegion,
-        details.KafkaSubnetIds,
+        details.VpcSubnetIds,
         Array.isArray(details.MskSecurityGroupId)
           ? details.MskSecurityGroupId
           : [details.MskSecurityGroupId],
-        details.kafkaVpcId,
+        details.vpcId,
         details.IotRoleArn
       );
 
@@ -282,7 +302,7 @@ async function deployStack() {
 
 
 
-    // Update Environment Variables For Lambdas
+    //  Update Environment Variables For Lambdas
 
     try {
       // AVS-Endpoint
@@ -314,27 +334,10 @@ async function deployStack() {
     }
 
 
-    // Setup Mongodb Private Link With AWS 
+   // Setup EventBridge & Mongodb Triggers
 
     try {
 
-      if (details) {
-        const vpcId = details.kafkaVpcId;
-        const subnetIds = JSON.parse(details.KafkaPublicSubnetIds);
-        const atlasProjectId = details.AtlasProjectId;
-
-        await setupPrivateLink({ atlasProjectId, region: awsRegion, subnetIds, vpcId })
-
-      }
-    } catch (error) {
-      console.log("Error setting up private endpoint: ", error);
-    }
-
-
-
-    try {
-
-      // Setup EventBridge & Mongodb Triggers
       const eventBridgeClient = new EventBridgeClient({ region: awsRegion });
       const lambdaClient = new LambdaClient({ region: awsRegion });
 
@@ -349,7 +352,7 @@ async function deployStack() {
       console.error(`Error: ${err}`);
     }
 
-    // Create Vector Index & Import Seed Data to Mongodb & Generate Embeddings
+  // Create Vector Index & Import Seed Data to Mongodb & Generate Embeddings
 
     const client = new MongoClient(mongoConnStr, {});
 
