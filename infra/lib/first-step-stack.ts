@@ -987,7 +987,7 @@ export class FirstStepStack extends cdk.Stack {
     const greengrassChatEndpointlambdaFn = new lambda.Function(this, `${projectName}chatendpoint`, {
       runtime: lambda.Runtime.PYTHON_3_11,
       handler: 'lambda_function.lambda_handler',
-      code: lambda.Code.fromAsset('resources/lambdas/greengrass-chatendpoint'),
+      code: lambda.Code.fromAsset('resources/lambdas/greengrass-chatendpoint/bedrock.zip'),
       memorySize: 1024,
       ephemeralStorageSize: cdk.Size.mebibytes(2048),
       timeout: cdk.Duration.minutes(5)

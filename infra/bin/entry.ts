@@ -83,9 +83,6 @@ async function deployStack() {
     installPythonDependencies('resources/lambdas/avs-endpoint/lambda_function.py', ['boto3', 'pymongo==4.6.0']);
 
 
-    console.log("Intsalling dependencies for : greengrass-chatendpoint lambda");
-    installPythonDependencies('resources/lambdas/greengrass-chatendpoint/lambda_function.py', ['langchain==0.1.3', 'langchain_community==0.0.15', 'pymongo', 'boto3']);
-
 
 
 
@@ -146,9 +143,8 @@ async function deployStack() {
 
 
     deleteLambdaDirectoryContents('resources/lambdas/avs-endpoint/lambda_function.py');
-    deleteLambdaDirectoryContents('resources/lambdas/greengrass-chatendpoint/lambda_function.py');
+   
 
-    
 
 
     // Create Lifecycle Script + Notebook Instance for Sagemaker
@@ -326,7 +322,8 @@ async function deployStack() {
           'MODEL_ID': 'amazon.titan-text-lite-v1',
           'MONGODB_CONNECTION_STRING': mongoConnStr,
           'MONGODB_DB': 'GreengrassIot',
-          'MONGODB_DB_COLLECTION': 'iot-chat'
+          'MONGODB_DB_COLLECTION': 'iot-chat',
+          'EMBEDDING_FIELD': 'embedding',
         }
 
       });
