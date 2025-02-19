@@ -536,6 +536,32 @@ export class FirstStepStack extends cdk.Stack {
       enableKeyRotation: true, // Enable automatic key rotation
     });
 
+    iotRole.addToPolicy(
+      new iam.PolicyStatement({
+        resources: [kmsKey.keyArn], // Restrict access to the specific KMS key
+        actions: [
+          'kms:DescribeKey',  // Allow describing the key
+          'kms:GetPublicKey',  // (Optional) Needed if asymmetric key
+          'kms:Decrypt',       // Allow decryption of secrets
+          'kms:GenerateDataKey', // Allow generating data keys for encryption
+        ],
+      })
+    );
+
+    iotRole.addToPolicy(
+      new iam.PolicyStatement({
+        resources: ['*'], // Allow access to all CloudWatch Logs resources
+        actions: [
+          'logs:CreateLogGroup',    // Allow creating log groups
+          'logs:CreateLogStream',   // Allow creating log streams
+          'logs:PutLogEvents',      // Allow writing logs
+          'logs:DescribeLogGroups', // Allow listing log groups
+          'logs:DescribeLogStreams', // Allow listing log streams
+          'logs:PutRetentionPolicy' // Allow setting retention policies
+        ],
+      })
+    );
+
     // Create a secret in AWS Secrets Manager for Kafka credentials, using the new KMS key
     const kafkaSecret = new secretsmanager.Secret(this, 'KafkaSecret', {
       secretName: 'AmazonMSK_kafka_secret',
@@ -553,7 +579,17 @@ export class FirstStepStack extends cdk.Stack {
 
     // Grant secret access to the IoT Rule role
     kafkaSecret.grantRead(iotRole);
+    kafkaSecret.grantWrite(iotRole);
 
+
+
+    const mskClusterConfig = new msk.CfnConfiguration(this, 'MskClusterConfig', {
+      name: 'IoTToMskConfig',
+      kafkaVersionsList: ['3.2.0'], // Ensure compatibility with your cluster version
+      serverProperties: `
+        auto.create.topics.enable=true
+      `,
+    });
 
 
     // Create an MSK cluster
@@ -576,6 +612,10 @@ export class FirstStepStack extends cdk.Stack {
           },
        
         }
+      },
+      configurationInfo: {
+        arn: mskClusterConfig.ref,
+        revision: 1
       }
     });
 

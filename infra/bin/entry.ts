@@ -84,7 +84,7 @@ async function deployStack() {
 
 
     console.log("Intsalling dependencies for : greengrass-chatendpoint lambda");
-    installPythonDependencies('resources/lambdas/greengrass-chatendpoint/lambda_function.py', ['langchain', 'langchain_community', 'pymongo', 'boto3']);
+    installPythonDependencies('resources/lambdas/greengrass-chatendpoint/lambda_function.py', ['langchain==0.1.3', 'langchain_community==0.0.15', 'pymongo', 'boto3']);
 
 
 
@@ -147,6 +147,8 @@ async function deployStack() {
 
     deleteLambdaDirectoryContents('resources/lambdas/avs-endpoint/lambda_function.py');
     deleteLambdaDirectoryContents('resources/lambdas/greengrass-chatendpoint/lambda_function.py');
+
+    
 
 
     // Create Lifecycle Script + Notebook Instance for Sagemaker
@@ -311,7 +313,7 @@ async function deployStack() {
         {
           'ATLAS_URI': mongoConnStr,
           'DB_NAME': 'GreengrassIot',
-          'FAILURE_THRESHOLD': '10',
+          'FAILURE_THRESHOLD': '0.5',
           'SAGEMAKER_ENDPOINT': 'fpm-endpoint'
         }
       });
@@ -334,7 +336,7 @@ async function deployStack() {
     }
 
 
-   // Setup EventBridge & Mongodb Triggers
+  //  Setup EventBridge & Mongodb Triggers
 
     try {
 
@@ -428,6 +430,10 @@ async function deployStack() {
       } catch (err) {
         console.error("Error importing data", err);
       }
+
+      // Importing seed data user & vehicle data
+
+
 
 
 

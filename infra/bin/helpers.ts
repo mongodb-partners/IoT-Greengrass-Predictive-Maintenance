@@ -2,6 +2,7 @@ import * as path from "path";
 import { execSync, spawn } from "child_process";
 import readline from "readline";
 import fs from "fs";
+import { v4 as uuidv4 } from 'uuid';
 
 
 export function installPythonDependencies(filePath: string, dependencies: string[]): void {
@@ -453,9 +454,9 @@ export const createIoTTopicKafkaRule = (
             clientProperties: {
               'bootstrap.servers': bootstrapServers,
               'security.protocol': 'SASL_SSL',
-              'sasl.mechanism': 'PLAIN',
-              'sasl.plain.username': `\${get_secret('AmazonMSK_kafka_secret', 'SecretString', 'username', '${iamRoleArn}')}`,
-              'sasl.plain.password': `\${get_secret('AmazonMSK_kafka_secret', 'SecretString', 'password', '${iamRoleArn}')}`
+              'sasl.mechanism': 'SCRAM-SHA-512',
+              'sasl.scram.username': `\${get_secret('AmazonMSK_kafka_secret', 'SecretString', 'username', '${iamRoleArn}')}`,
+              'sasl.scram.password': `\${get_secret('AmazonMSK_kafka_secret', 'SecretString', 'password', '${iamRoleArn}')}`
             }
           }
         }
@@ -548,25 +549,26 @@ export const createIoTTopicLambdaRule = (
     const functionName = "LambdaTelemetry";
 
     // Check if permission already exists
-    try {
-      console.log(`Checking if permission "iot-events" exists for ${functionName}...`);
+    // try {
+    //   console.log(`Checking if permission "iot-events" exists for ${functionName}...`);
 
-      const getPolicyCommand = `aws lambda get-policy --function-name ${functionName}`;
-      const policyOutput = execSync(getPolicyCommand, { encoding: 'utf-8' });
+    //   const getPolicyCommand = `aws lambda get-policy --function-name ${functionName}`;
+    //   const policyOutput = execSync(getPolicyCommand, { encoding: 'utf-8' });
 
-      if (policyOutput.includes('"iot-events"')) {
-        console.log('Permission already exists, deleting it first...');
-        const removePermissionCommand = `aws lambda remove-permission --function-name ${functionName} --statement-id iot-events-telemetry`;
-        execSync(removePermissionCommand, { encoding: 'utf-8' });
-        console.log('Existing permission removed.');
-      }
-    } catch (policyError) {
-      console.log('No existing permission found, proceeding to add a new one.');
-    }
+    //   if (policyOutput.includes('"iot-events"')) {
+    //     console.log('Permission already exists, deleting it first...');
+    //     const removePermissionCommand = `aws lambda remove-permission --function-name ${functionName} --statement-id iot-events-telemetry`;
+    //     execSync(removePermissionCommand, { encoding: 'utf-8' });
+    //     console.log('Existing permission removed.');
+    //   }
+    // } catch (policyError) {
+    //   console.log('No existing permission found, proceeding to add a new one.');
+    // }
 
     // Add new permission for IoT to invoke the Lambda function
+    const statementId = `iot-events-${uuidv4()}`;
     const addPermissionCommand = `aws lambda add-permission --function-name ${functionName} \
-    --statement-id iot-events-telemetry --action "lambda:InvokeFunction" --principal iot.amazonaws.com`;
+    --statement-id ${statementId} --action "lambda:InvokeFunction" --principal iot.amazonaws.com`;
 
     console.log('Running command to add permission:', addPermissionCommand);
 
