@@ -35,7 +35,11 @@ Before proceeding, ensure you have the following prerequisites installed:
 
 [Setup Edge](./edge/)
 
-### Part 5. Set up Field Technician's Mobile Application
+### Part 5. Greengrass Telemetry Data Setup
+
+[Setup Greengrass Telemetry](./greengrass-telemetry/)
+
+### Part 6. Set up Field Technician's Mobile Application
 
 With the previous steps done, vehicle telemetry would flow to MongoDB, then to AWS and finally be used to do predictive maintenance. If we determine a vehicle needs service, a vehicle maintenance job is created in MongoDB. These are shown in this mobile application.
 

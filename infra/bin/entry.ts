@@ -146,7 +146,7 @@ async function deployStack() {
    
 
 
-
+    // Sagemaker Implementation
     // Create Lifecycle Script + Notebook Instance for Sagemaker
 
     // try {
@@ -155,6 +155,8 @@ async function deployStack() {
     // } catch (error) {
     //   console.log("Error Setting Up Sagemaker : ", error);
     // }
+
+
 
     // Upload Mongo Connector Apache Kafka Plugin to S3
 
@@ -430,6 +432,41 @@ async function deployStack() {
 
       // Importing seed data user & vehicle data
 
+      try {
+        // Import seed data to User collection
+        const userFilePath = path.resolve("resources/data/User.json");
+        const userCollection = database.collection("User");
+        const userDocumentCount = await userCollection.countDocuments();
+      
+        if (userDocumentCount > 0) {
+          console.log("Data import skipped: User collection already contains documents.");
+        } else {
+          const userData = JSON.parse(fs.readFileSync(userFilePath, "utf8"));
+          console.log("Inserting data into the User collection...");
+          const result = await userCollection.insertMany(userData);
+          console.log(`Inserted ${result.insertedCount} documents into the User collection.`);
+        }
+      } catch (err) {
+        console.error("Error importing data into User collection", err);
+      }
+      
+      try {
+        // Import seed data to Vehicle collection
+        const vehicleFilePath = path.resolve("resources/data/Vehicle.json");
+        const vehicleCollection = database.collection("Vehicle");
+        const vehicleDocumentCount = await vehicleCollection.countDocuments();
+      
+        if (vehicleDocumentCount > 0) {
+          console.log("Data import skipped: Vehicle collection already contains documents.");
+        } else {
+          const vehicleData = JSON.parse(fs.readFileSync(vehicleFilePath, "utf8"));
+          console.log("Inserting data into the Vehicle collection...");
+          const result = await vehicleCollection.insertMany(vehicleData);
+          console.log(`Inserted ${result.insertedCount} documents into the Vehicle collection.`);
+        }
+      } catch (err) {
+        console.error("Error importing data into Vehicle collection", err);
+      }
 
 
 

@@ -42,6 +42,23 @@ Before proceeding, ensure you have the following prerequisites installed:
         MongoDB::Atlas::DatabaseUser
         MongoDB::Atlas::ProjectIpAccessList
         ```
+    - The execution role for these extensions should have a admin access as well as the trust relationship policy should give access to all principal
+
+    ```json
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "Statement1",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "*"
+                },
+                "Action": "sts:AssumeRole"
+            }
+        ]
+    }
+    ```
 
 
 # Amazon Bedrock

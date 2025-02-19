@@ -9,7 +9,7 @@ To get started with the application, follow these steps:
 1. **Navigate to the project directory:**
 
     ```bash
-    cd frontend/iot-fleet-web
+    cd web/iot-fleet-web
     ```
 
 2. **Install dependencies:**
