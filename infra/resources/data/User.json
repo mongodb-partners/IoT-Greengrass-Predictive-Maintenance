@@ -1,14 +1,10 @@
 [{
-    "_id": {
-      "$oid": "676cfb3fc856614a293915d0"
-    },
+    "_id": "676cfb3fc856614a293915d0",
     "email": "fleetadmin@live.in",
     "password": "123",
     "name": "John Wick"
   },{
-    "_id": {
-      "$oid": "6537c7b54a4588f9fd2ff8aa"
-    },
+    "_id": "6537c7b54a4588f9fd2ff8aa",
     "email": "technician@live.in",
     "password": "123",
     "name": "John Doe"

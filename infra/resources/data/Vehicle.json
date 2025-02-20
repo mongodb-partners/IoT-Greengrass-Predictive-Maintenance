@@ -1,14 +1,10 @@
 [{
-    "_id": {
-      "$oid": "652ed1957fb496144946ae6e"
-    },
+    "_id": "652ed1957fb496144946ae6e",
     "make": "Acura",
     "model": "ILX",
     "vin": "19VDE1F3XEE414842"
   },{
-    "_id": {
-      "$oid": "676d4d8cc856614a293915d3"
-    },
+    "_id": "676d4d8cc856614a293915d3",
     "make": "Toyota",
     "model": "Supra",
     "vin": "34VDE1F3XEE414891"
