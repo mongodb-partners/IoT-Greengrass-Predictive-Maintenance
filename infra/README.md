@@ -78,11 +78,61 @@ https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-env.html
 
 ![Create Trigger With AWS Event Bridge](../images/aws-event-bridge.png)  
 
-- You will be again prompted for  mdb-s3 scheduled trigger 
+- You will be again prompted for mdb-s3 scheduled trigger , you can choose schedule type as cron and schedule it for every minute
 
 ![Create Mongodb Trigger](../images/trigger-update.png)  
 
-- Select Event Bridge for trigger type and follow the same process mentioned above for the first trigger
+- Select Event Bridge, and provide your AWS Account ID
+
+![Create Trigger With AWS Event Bridge](../images/mongo-trigger-2.png)  
+
+- Then to extract Trigger Id for this trigger, Go to AWS > Event Bridge > Partner Event Sources > You will find a new entry for partner event bridge trigger
+
+![Create Trigger With AWS Event Bridge](../images/aws-event-bridge.png)  
+
+
+## ATLAS Private Endpoint
+
+To connect to your MongoDB Atlas cluster securely via a **Private Endpoint**, follow the steps below in the Atlas UI:
+
+### 1. Access the Connection Dialog  
+Go to your **Atlas Project**, and click on the **Connect** button for your cluster.  
+In the dialog that opens, select the **Private Endpoint** tab.  
+This ensures you are connecting over your configured private endpoint.
+
+![Atlas private endpoint](../images/private-endpoint-1.png)
+
+### 2. Select a Connection Method  
+After selecting **Private Endpoint**, choose your preferred connection method.  
+Options include **MongoDB Compass**, **MongoDB Shell**, or **Drivers** (like Node.js, Python, etc.).  
+Once you choose a connection method, Atlas will display the **Private Endpoint Connection String**.  
+Copy this connection string for use in your application.
+
+![Atlas private endpoint](../images/private-endpoint-2.png)
+
+---
+
+### 3. Update with Credentials from CDK Outputs  
+In the connection string you copied, you will see placeholders for the username and password:
+
+```
+mongodb+srv://<DB_USERNAME>:<DB_PASSWORD>@<PRIVATE_ENDPOINT_URI>/<DATABASE_NAME>?retryWrites=true&w=majority
+```
+
+Replace `<DB_USERNAME>` and `<DB_PASSWORD>` with the actual values provided by your **CDK Outputs**.  
+These credentials were created during your CDK deployment and are required to authenticate the connection.
+
+For example:
+
+```
+mongodb+srv://myUser:myPassword@clustername-abcde.mongodb.net/myDatabase?retryWrites=true&w=majority
+```
+
+---
+
+After updating the credentials, your connection string is ready to use with your application or tools over the Atlas Private Endpoint.
+
+
 
 ## Useful commands
 
