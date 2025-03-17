@@ -45,8 +45,8 @@ With the previous steps done, vehicle telemetry would flow to MongoDB, then to A
 
 Credentials to login to mobile application
 
-e-mail   : technician@live.in
-password : 123
+- e-mail   : technician@live.in
+- password : 123
 
 [Set up Field Technician's Mobile Application](./mobile/)
 
@@ -56,12 +56,12 @@ The Fleet dashboard shows all vehicle maintenance jobs, vehicle information, and
 
 Credentials to login to mobile application
 
-e-mail   : fleetadmin@live.in
-password : 123
+- e-mail   : fleetadmin@live.in
+- password : 123
 
 [Set up Fleet Dashboard](./web/README.md) holds the code for the web dashboard. This shows information about the fleet.
 
-### Part 7. Test the Job Creation Floe
+### Part 7. Test the Job Creation Flow
 
 Go to AWS Iot Core -> MQTT Test Client and Produce the below sensor data message to the topic `test/topic`
 ```
