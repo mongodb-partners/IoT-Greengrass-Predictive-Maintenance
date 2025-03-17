@@ -43,17 +43,34 @@ Before proceeding, ensure you have the following prerequisites installed:
 
 With the previous steps done, vehicle telemetry would flow to MongoDB, then to AWS and finally be used to do predictive maintenance. If we determine a vehicle needs service, a vehicle maintenance job is created in MongoDB. These are shown in this mobile application.
 
+Credentials to login to mobile application
+
+e-mail   : technician@live.in
+password : 123
+
 [Set up Field Technician's Mobile Application](./mobile/)
 
 ### Part 6. Set up Fleet Dashboard
 
 The Fleet dashboard shows all vehicle maintenance jobs, vehicle information, and parts inventory.
 
+Credentials to login to mobile application
+
+e-mail   : fleetadmin@live.in
+password : 123
+
 [Set up Fleet Dashboard](./web/README.md) holds the code for the web dashboard. This shows information about the fleet.
 
+### Part 7. Test the Job Creation Floe
+
+Go to AWS Iot Core -> MQTT Test Client and Produce the below sensor data message to the topic `test/topic`
+```
+{"vehicleId":"652ed1957fb496144946ae6e","timestamp":1734938650,"voltage":1.11,"current":3.111}
+
+```
 
 
-### Part 7: Destroy Architecture
+### Part 8: Destroy Architecture
 
 Some resources need to be manually deleted, as they are not part of the CDK deployment and were created using the CLI/SDK based on CDK outputs. These include:
 

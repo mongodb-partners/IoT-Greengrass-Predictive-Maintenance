@@ -149,9 +149,11 @@ Trust Relationship:
 
 ![Create Component](../../../../images/create-comp.png)
 4. Recipe example. Update the S3 bucket path.
+
 ```sh
+---
 RecipeFormatVersion: "2020-01-25"
-ComponentName: "cpp.consumer.iot"
+ComponentName: "new.consumer.cpp"
 ComponentVersion: "1.0.0"
 ComponentType: "aws.greengrass.generic"
 ComponentDescription: "IoT C++ Consumer"
@@ -160,17 +162,15 @@ Manifests:
     os: "linux"
   Lifecycle:
     install:
-      Script: "chmod +x {artifacts:decompressedPath}/consumer/build/consumer"
+      Script: "chmod +x {artifacts:decompressedPath}/build/build/consumer"
       RequiresPrivilege: "true"
-    Run: "{artifacts:decompressedPath}/consumer/build/consumer"
+      Run: "{artifacts:decompressedPath}/build/build/consumer --endpoint axmft2e63giec-ats.iot.us-east-1.amazonaws.com\
+        \ --cert /greengrass/v2/thingCert.crt --key /greengrass/v2/privKey.key"
   Artifacts:
-  - Uri: "s3://aws-iot-vehicle-telemetry/cpp.consumer.iot/1.0.0/consumer.zip"
+  - Uri: "s3://aws-iot-vehicle-telemetry-anuj/new.consumer.cpp/1.0.0/build.zip"
     Unarchive: "ZIP"
 Lifecycle: {}
 ```
-
-
-
 
 
 5. Once the component is created, open the component and deploy it to a Greengrass device using the Deploy option and create a new deployment by entering the Greengrass core device. select the target type as core device and copy the core device name. Select ```cpp.consumer.iot``` in the My Components list. Select ```cpp.consumer.iot``` in the Selected components. Keep all other options as default.
