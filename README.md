@@ -54,7 +54,7 @@ Credentials to login to mobile application
 
 The Fleet dashboard shows all vehicle maintenance jobs, vehicle information, and parts inventory.
 
-Credentials to login to mobile application
+Credentials to login to web application
 
 - e-mail   : fleetadmin@live.in
 - password : 123
