@@ -35,8 +35,7 @@ async function runNpmInstall(directory: string) {
 
 
 async function deployStack() {
-  const solution = "iot-greengrass-demo";
-  const stackName = "FirstStepStack";
+
 
   try {
     let filePath = path.join("resources", "mongodb-connector", "mongo-kafka-connect-1.15.0-confluent.jar");
@@ -83,13 +82,9 @@ async function deployStack() {
     installPythonDependencies('resources/lambdas/avs-endpoint/lambda_function.py', ['boto3', 'pymongo==4.6.0']);
 
 
+    const stackName = "FirstStepStack";
 
 
-
-    const containerUri =
-      "663277389841.dkr.ecr.us-east-1.amazonaws.com/sagemaker-data-wrangler-container:2.x";
-    const notebookInstanceName = solution + "-notebook-instance";
-    const lifecycleConfigName = solution + "-lifecycle-config";
 
     const awsAccountId = await input({
       message: "Enter your AWS Account ID",
@@ -102,6 +97,8 @@ async function deployStack() {
     const atlasOrgId = await input({
       message: "Enter your MongoDB Organization ID",
     });
+
+    const solution = `iot-greengrass-demo-${atlasOrgId.slice(-8)}`;
 
     const atlasOrgPublicKey = await input({
       message: "Enter your MongoDB Atlas Public Key",
@@ -165,7 +162,7 @@ async function deployStack() {
     const fileStream = fs.createReadStream(filePath);
 
     const uploadParams = {
-      Bucket: 'iot-greengrass-connector-bucket',
+      Bucket: `${solution}-connector-bucket`,
       Key: path.basename(filePath),
       Body: fileStream,
     };
@@ -242,7 +239,7 @@ async function deployStack() {
             : details.VpcSubnetIds,
         },
         pluginS3BucketArn: details.ConnectorBucketArn,
-        pluginS3Bucket: "iot-greengrass-connector-bucket",
+        pluginS3Bucket: `${solution}-connector-bucket`,
         pluginS3Key: "mongo-kafka-connect-1.15.0-confluent.jar",
         roleArn: details.SinkConnectorRoleArn,
         connectorConfig: connectorConfig,
