@@ -763,7 +763,7 @@ export class FirstStepStack extends cdk.Stack {
     // Create bucket for connector
 
     const connectorBucket = new s3.Bucket(this, `${projectName}connectorbucket`, {
-      bucketName: `iot-greengrass-connector-bucket`,
+      bucketName: `${bucketName}-connector-bucket`,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
@@ -773,6 +773,11 @@ export class FirstStepStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'ConnectorBucketArn', {
       value: connectorBucket.bucketArn,
       description: 'ARN of the IoT Greengrass connector bucket',
+    });
+
+    new cdk.CfnOutput(this, 'ConnectorBucketName', {
+      value: connectorBucket.bucketName,
+      description: 'Name of the IoT Greengrass connector bucket',
     });
 
 
@@ -877,7 +882,7 @@ export class FirstStepStack extends cdk.Stack {
     // bucket for mdb-s3
 
     const mdbS3bucket = new s3.Bucket(this, `${projectName}mdbs3demo`, {
-      bucketName: 'mdb-scheduled-s3-bucket',
+      bucketName: `${bucketName}-mdb-s3-bucket`,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
@@ -897,7 +902,7 @@ export class FirstStepStack extends cdk.Stack {
         DB_PASSWORD: setupProps.dbPassword,
         CLUSTER_NAME: setupProps.clusterName,
         DB_NAME: 'GreengrassIot',
-        S3_BUCKET: 'mdb-scheduled-s3-bucket'
+        S3_BUCKET: `${bucketName}-mdb-s3-bucket`
       },
       role: lambdaExecutionRole,
       ephemeralStorageSize: cdk.Size.mebibytes(2048),
@@ -916,6 +921,11 @@ export class FirstStepStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, 'mdbS3lambdaName', {
       value: mdbS3lambdaFn.functionName
+    })
+
+    new cdk.CfnOutput(this, 'MdbS3BucketName', {
+      value: mdbS3bucket.bucketName,
+      description: 'Name of the MongoDB S3 integration bucket',
     })
 
     // avs-endpoint lambda
