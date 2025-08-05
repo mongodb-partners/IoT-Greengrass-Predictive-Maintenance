@@ -36,14 +36,12 @@ COPY "greengrass-entrypoint.sh" /
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     tar unzip wget sudo procps passwd python3 openjdk-11-jre-headless \
-    build-essential libcurl4-openssl-dev libuv1-dev libprocps-dev libssl-dev zlib1g-dev cmake git && \
+    build-essential libsqlite3-dev libcurl4-openssl-dev libuv1-dev libprocps-dev libssl-dev zlib1g-dev cmake git && \
     wget $GREENGRASS_RELEASE_URI && \
     chmod +x /greengrass-entrypoint.sh && \
     mkdir -p /opt/greengrassv2 $GGC_ROOT_PATH && \
     unzip $GREENGRASS_ZIP_FILE -d /opt/greengrassv2 && rm $GREENGRASS_ZIP_FILE && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get install -y build-essential libcurl4-openssl-dev libuv1-dev libprocps-dev libssl-dev zlib1g-dev cmake git
 
 # Modify /etc/sudoers
 COPY "modify-sudoers.sh" /
@@ -64,6 +62,13 @@ RUN ldconfig
 WORKDIR /pahocpp/paho.mqtt.cpp
 RUN cmake -Bbuild -H. -DPAHO_BUILD_STATIC=ON
 RUN cmake --build build/ --target install
+RUN ldconfig
+
+WORKDIR /aws-sdk-crt
+RUN git clone --recurse-submodules https://github.com/awslabs/aws-crt-cpp.git
+WORKDIR /aws-sdk-crt/aws-crt-cpp
+RUN cmake -Bbuild -H. -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local
+RUN cmake --build build --target install
 RUN ldconfig
 
 ENTRYPOINT ["/greengrass-entrypoint.sh"]
