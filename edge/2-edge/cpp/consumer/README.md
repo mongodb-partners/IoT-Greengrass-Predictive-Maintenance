@@ -57,8 +57,11 @@ Sample screenshot of the successful completion of the build
 (Optional) To run the consumer in the local. Ensure you are in the consumer folder copied from the container.
 
 ```
-build/consumer
+build/consumer --endpoint <MQTT_ENDPOINT> --cert /greengrass/v2/thingCert.crt --key /greengrass/v2/privKey.key
 ```
+
+MQTT_ENDPOINT will be found in AWS -> IoT Core -> MQTT test client -> Connection Details -> Endpoint
+
 
 on a successful run, it will consume the data . Below is a sample output.
 
