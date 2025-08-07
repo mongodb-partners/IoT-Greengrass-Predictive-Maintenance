@@ -13,6 +13,14 @@ This project is bootstrapped using [`@react-native-community/cli`](https://githu
 ## Configuration
 
 Update the AWS Lambda http url for the chat assistant inside the `app.config.js` 
+----
+
+The HTTP URL Can be found in 
+
+1. Go to Lambda in AWS
+2. Find the function that looks like <b>FirstStepStack-GreengrassIotchatendpoint</b> and open it
+3. Find the Function URL in the function Overview. 
+4. Copy and paste it in url inside `app.config.js`
 
 
 ### Node Modules install
