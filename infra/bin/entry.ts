@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 import { input } from "@inquirer/prompts";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { SageMakerClient } from "@aws-sdk/client-sagemaker";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { EventBridgeClient } from "@aws-sdk/client-eventbridge";
@@ -438,7 +438,11 @@ async function deployStack() {
         if (userDocumentCount > 0) {
           console.log("Data import skipped: User collection already contains documents.");
         } else {
-          const userData = JSON.parse(fs.readFileSync(userFilePath, "utf8"));
+          const userDataRaw = JSON.parse(fs.readFileSync(userFilePath, "utf8"));
+          const userData = userDataRaw.map((user: any) => ({
+            ...user,
+            _id: new ObjectId(user._id)
+          }));
           console.log("Inserting data into the User collection...");
           const result = await userCollection.insertMany(userData);
           console.log(`Inserted ${result.insertedCount} documents into the User collection.`);
@@ -456,7 +460,11 @@ async function deployStack() {
         if (vehicleDocumentCount > 0) {
           console.log("Data import skipped: Vehicle collection already contains documents.");
         } else {
-          const vehicleData = JSON.parse(fs.readFileSync(vehicleFilePath, "utf8"));
+          const vehicleDataRaw = JSON.parse(fs.readFileSync(vehicleFilePath, "utf8"));
+          const vehicleData = vehicleDataRaw.map((vehicle: any) => ({
+            ...vehicle,
+            _id: new ObjectId(vehicle._id)
+          }));
           console.log("Inserting data into the Vehicle collection...");
           const result = await vehicleCollection.insertMany(vehicleData);
           console.log(`Inserted ${result.insertedCount} documents into the Vehicle collection.`);
