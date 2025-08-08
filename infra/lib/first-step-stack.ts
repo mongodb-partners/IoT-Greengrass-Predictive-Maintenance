@@ -32,6 +32,7 @@ interface FirstStepStackProps {
   readonly atlasOrgPublicKey: string;
   readonly atlasOrgPrivateKey: string;
   readonly solution: string;
+  readonly vpcId?: string;
 }
 
 export class FirstStepStack extends cdk.Stack {
@@ -455,16 +456,22 @@ export class FirstStepStack extends cdk.Stack {
     // IOT Core to MongoDb
 
 
-    // Use default VPC and subnets if not provided in config
-    const vpc = ec2.Vpc.fromLookup(this, 'DefaultVpc', {
-      isDefault: true
-    });
+    // Use custom VPC if provided, otherwise use default VPC
+    const vpc = setupProps.vpcId 
+      ? ec2.Vpc.fromLookup(this, 'CustomVpc', {
+          vpcId: setupProps.vpcId
+        })
+      : ec2.Vpc.fromLookup(this, 'DefaultVpc', {
+          isDefault: true
+        });
 
-    const subnetIds = ec2.Vpc.fromLookup(this, 'DefaultSubnets', {
-      isDefault: true
-    }).publicSubnets.map(subnet => subnet.subnetId);
-
-   
+    const subnetIds = setupProps.vpcId
+      ? ec2.Vpc.fromLookup(this, 'CustomSubnets', {
+          vpcId: setupProps.vpcId
+        }).publicSubnets.map(subnet => subnet.subnetId)
+      : ec2.Vpc.fromLookup(this, 'DefaultSubnets', {
+          isDefault: true
+        }).publicSubnets.map(subnet => subnet.subnetId);
 
     // Security Group for MSK
     const mskSecurityGroup = new ec2.SecurityGroup(this, 'MskSecurityGroup', {
@@ -472,7 +479,28 @@ export class FirstStepStack extends cdk.Stack {
       allowAllOutbound: true,
     });
 
-    mskSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.allTraffic(), 'Allow all traffic');
+    mskSecurityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcpRange(9092, 9098), 'Allow Kafka ports 9092-9098');
+
+    // Custom Security Group with MongoDB and port range 1024-1028
+    const customSecurityGroup = new ec2.SecurityGroup(this, 'CustomSecurityGroup', {
+      vpc: vpc,
+      allowAllOutbound: true,
+      description: 'Custom security group for MongoDB and port range 1024-1028',
+    });
+
+    // Add inbound rules for port range 1024-1028
+    customSecurityGroup.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcpRange(1024, 1028),
+      'Allow TCP traffic on ports 1024-1028'
+    );
+
+    // Add inbound rule for MongoDB port 27017
+    customSecurityGroup.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(27017),
+      'Allow MongoDB traffic on port 27017'
+    );
 
 
     // Output the VPC ID
@@ -497,6 +525,20 @@ export class FirstStepStack extends cdk.Stack {
       value: mskSecurityGroup.securityGroupId,
       description: 'The ID of the MSK Security Group',
       exportName: 'MskSecurityGroupId',
+    });
+
+    // Output the Custom Security Group ID
+    new cdk.CfnOutput(this, 'CustomSecurityGroupId', {
+      value: customSecurityGroup.securityGroupId,
+      description: 'The ID of the Custom Security Group for MongoDB and ports 1024-1028',
+      exportName: 'CustomSecurityGroupId',
+    });
+
+    // Output the Custom Security Group ARN for VPC endpoint usage
+    new cdk.CfnOutput(this, 'CustomSecurityGroupArn', {
+      value: `arn:aws:ec2:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:security-group/${customSecurityGroup.securityGroupId}`,
+      description: 'The ARN of the Custom Security Group for VPC endpoints',
+      exportName: 'CustomSecurityGroupArn',
     });
 
 
@@ -1048,6 +1090,7 @@ export class FirstStepStack extends cdk.Stack {
     const atlasOrgPublicKey = this.node.tryGetContext('atlasOrgPublicKey') ?? "";
     const atlasOrgPrivateKey = this.node.tryGetContext('atlasOrgPrivateKey') ?? "";
     const solution = this.node.tryGetContext('solution');
+    const vpcId = this.node.tryGetContext('vpcId'); // Optional custom VPC ID
 
     return {
       orgId,
@@ -1061,7 +1104,8 @@ export class FirstStepStack extends cdk.Stack {
       sagemakerModelEndpoint,
       atlasOrgPublicKey,
       atlasOrgPrivateKey,
-      solution
+      solution,
+      vpcId
     }
   }
 }

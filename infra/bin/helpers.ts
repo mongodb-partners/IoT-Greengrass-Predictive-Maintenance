@@ -235,10 +235,11 @@ interface PrivateLinkConfig {
   region: string;
   vpcId: string;
   subnetIds: string [];
+  securityGroupId: string;
 }
 
 export const setupPrivateLink = async (config: PrivateLinkConfig): Promise<void> => {
-  const { atlasProjectId, region, vpcId, subnetIds } = config;
+  const { atlasProjectId, region, vpcId, subnetIds, securityGroupId } = config;
 
 
 
@@ -266,7 +267,7 @@ export const setupPrivateLink = async (config: PrivateLinkConfig): Promise<void>
 
     console.log("Step 3: Creating the interface endpoint in AWS...");
     const subnetIdsArray = subnetIds.join(" ");
-    const createVpcEndpointCommand = `aws ec2 create-vpc-endpoint --vpc-id ${vpcId} --region ${region} --service-name ${serviceName} --vpc-endpoint-type Interface --subnet-ids ${subnetIdsArray}`;
+    const createVpcEndpointCommand = `aws ec2 create-vpc-endpoint --vpc-id ${vpcId} --region ${region} --service-name ${serviceName} --vpc-endpoint-type Interface --subnet-ids ${subnetIdsArray} --security-group-ids ${securityGroupId}`;
     const createVpcEndpointOutput = execSync(createVpcEndpointCommand, { encoding: "utf8" });
     console.log(createVpcEndpointOutput);
 
