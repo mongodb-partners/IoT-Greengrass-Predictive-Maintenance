@@ -116,7 +116,10 @@ async function deployStack() {
       message: "Enter your AWS secret Key",
     });
 
-
+    const customVpcId = await input({
+      message: "Enter your custom VPC ID (leave empty to use default VPC):",
+      required: false,
+    });
 
     // Deploy AWS + Mongodb CDK Infra 
 
@@ -134,6 +137,11 @@ async function deployStack() {
       "--outputs-file", "outputs.json",
     ];
 
+    // Add VPC ID context if provided
+    if (customVpcId && customVpcId.trim() !== '') {
+      args.push(`--context`, `vpcId=${customVpcId.trim()}`);
+    }
+
 
 
     await spawnProcess(command, args, awsAccountId, awsRegion, stackName);
@@ -141,6 +149,7 @@ async function deployStack() {
 
     deleteLambdaDirectoryContents('resources/lambdas/avs-endpoint/lambda_function.py');
    
+
 
 
     // Sagemaker Implementation
@@ -199,8 +208,9 @@ async function deployStack() {
         const vpcId = details.vpcId;
         const subnetIds = JSON.parse(details.VpcSubnetIds);
         const atlasProjectId = details.AtlasProjectId;
+        const securityGroupId = details.CustomSecurityGroupId;
 
-        await setupPrivateLink({ atlasProjectId, region: awsRegion, subnetIds, vpcId })
+        await setupPrivateLink({ atlasProjectId, region: awsRegion, subnetIds, vpcId, securityGroupId })
 
       }
     } catch (error) {
