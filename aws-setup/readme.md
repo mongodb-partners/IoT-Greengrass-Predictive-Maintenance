@@ -44,21 +44,24 @@ Before proceeding, ensure you have the following prerequisites installed:
         ```
     - The execution role for these extensions should have a admin access as well as the trust relationship policy should give access to all principal
 
-    ```json
+```json
     {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Sid": "Statement1",
-                "Effect": "Allow",
-                "Principal": {
-                    "AWS": "*"
-                },
-                "Action": "sts:AssumeRole"
-            }
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": [
+          "cloudformation.amazonaws.com",
+          "resources.cloudformation.amazonaws.com",
+          "lambda.amazonaws.com"
         ]
+      },
+      "Action": "sts:AssumeRole"
     }
-    ```
+  ]
+    }
+```
 
 
 # Amazon Bedrock
